@@ -17,7 +17,7 @@ export class LiveBaseComponent extends HTMLElement {
 export class LiveComponent extends LiveBaseComponent {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    params: { [key: string]: any };
+    params: { [key: string]: any } = {};
 
     handleKeyDown = (e: KeyboardEvent) => {};
     handleKeyUp = (e: KeyboardEvent) => {};
@@ -63,6 +63,12 @@ export class LiveComponent extends LiveBaseComponent {
         this.addEventListener("mouseout", this.handleMouseOut);
         this.canvas = this.root.children[0] as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d");
+    }
+    fetchAttribute() {
+        for (let i = 0; i < this.root.host.attributes.length; i++) {
+            const attr = this.root.host.attributes[i];
+            this.params[attr.name] = attr.value;
+        }
     }
     setParamValue(key: string, value: any) {
         this.params[key] = value;

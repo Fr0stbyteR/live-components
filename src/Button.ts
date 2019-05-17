@@ -30,6 +30,9 @@ export default class LiveButton extends LiveComponent {
 
     constructor() {
         super();
+    }
+    connectedCallback() {
+        this.fetchAttribute();
         this.paint(this.ctx, this.params);
     }
     paint(ctx: CanvasRenderingContext2D, paramsIn: TLiveButtonParams) {
