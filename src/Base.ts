@@ -1,6 +1,26 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "./Base.scss";
 
+export interface PointerDownEvent {
+    x: number;
+    y: number;
+    originalEvent: MouseEvent | TouchEvent;
+}
+
+export interface PointerMoveEvent {
+    x: number;
+    y: number;
+    movementX: number;
+    movementY: number;
+    originalEvent: MouseEvent | TouchEvent;
+}
+
+export interface PointerUpEvent {
+    x: number;
+    y: number;
+    originalEvent: MouseEvent | TouchEvent;
+}
+
 export class LiveBaseComponent extends HTMLElement {
     root: ShadowRoot;
 
@@ -25,16 +45,19 @@ export class LiveComponent extends LiveBaseComponent {
     handleWheel = (e: WheelEvent) => {};
     handleClick = (e: MouseEvent) => {};
     handleMouseDown = (e: MouseEvent) => {
+        e.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
         const x = e.pageX - rect.left;
         const y = e.pageY - rect.top;
         this.handlePointerDown({ x, y, originalEvent: e });
         const handleMouseMove = (e: MouseEvent) => {
+            e.preventDefault();
             const x = e.pageX - rect.left;
             const y = e.pageY - rect.top;
             this.handlePointerMove({ x, y, movementX: e.movementX, movementY: e.movementY, originalEvent: e });
         };
         const handleMouseUp = (e: MouseEvent) => {
+            e.preventDefault();
             const x = e.pageX - rect.left;
             const y = e.pageY - rect.top;
             this.handlePointerUp({ x, y, originalEvent: e });
@@ -47,18 +70,18 @@ export class LiveComponent extends LiveBaseComponent {
     handleMouseOver = (e: MouseEvent) => {};
     handleMouseOut = (e: MouseEvent) => {};
     handleContextMenu = (e: MouseEvent) => {};
-    handlePointerDown = (e: { x: number; y: number; originalEvent: MouseEvent | TouchEvent }) => {};
-    handlePointerMove = (e: { x: number; y: number; movementX: number; movementY: number; originalEvent: MouseEvent | TouchEvent }) => {};
-    handlePointerUp = (e: { x: number; y: number; originalEvent: MouseEvent | TouchEvent }) => {};
+    handlePointerDown = (e: PointerDownEvent) => {};
+    handlePointerMove = (e: PointerMoveEvent) => {};
+    handlePointerUp = (e: PointerUpEvent) => {};
 
     constructor() {
         super();
         this.addEventListener("keydown", this.handleKeyDown);
         this.addEventListener("keyup", this.handleKeyUp);
-        this.addEventListener("touchstart", this.handleTouchStart);
+        this.addEventListener("touchstart", this.handleTouchStart, { passive: false });
         this.addEventListener("wheel", this.handleWheel);
         this.addEventListener("click", this.handleClick);
-        this.addEventListener("mousedown", this.handleMouseDown);
+        this.addEventListener("mousedown", this.handleMouseDown, { passive: false });
         this.addEventListener("mouseover", this.handleMouseOver);
         this.addEventListener("mouseout", this.handleMouseOut);
         this.canvas = this.root.children[0] as HTMLCanvasElement;
