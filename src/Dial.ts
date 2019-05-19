@@ -161,7 +161,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             ctx.lineWidth = 0.4;
             roundedRect(ctx, 1, 1, width - 2, height - 2, 5);
             ctx.fillStyle = panelcolor;
-            fillRoundedRect(ctx, 1.2, 1.2, width - 0.4, 30 - 0.4, 5);
+            fillRoundedRect(ctx, 1.2, 1.2, width - 2.4, 30 - 0.4, [5, 5, 0, 0]);
         }
 
         ctx.strokeStyle = active ? activeneedlecolor : needlecolor;
@@ -261,30 +261,31 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             ctx.stroke();
         }
     }
-    getValueFromDelta(e: { x: number; y: number }) {
+    getValueFromDelta(e: PointerDragEvent) {
         const { type, mmin, mmax } = this.params;
         const stepRange = this.stepRange;
         const trueSteps = this.trueSteps;
-        const step = this.params.step || (mmax - mmin) / trueSteps;
-        let steps = Math.round((100 - e.y) / stepRange);
-        steps = Math.min(trueSteps, Math.max(0, steps));
+        const step = type === "enum" ? 1 : (this.params.step || (mmax - mmin) / trueSteps);
+        const prevSteps = type === "enum" ? e.prevValue : e.prevValue / step;
+        const dSteps = Math.round((e.fromY - e.y) / stepRange);
+        const steps = Math.min(trueSteps, Math.max(0, prevSteps + dSteps));
         if (type === "enum") return steps;
         if (type === "int") return Math.round(steps * step + mmin);
         return steps * step + mmin;
     }
     handlePointerDown = (e: PointerDownEvent) => {
         if (
-            e.x > this.interactionRect[0]
-            && e.x < this.interactionRect[0] + this.interactionRect[2]
-            && e.y > this.interactionRect[1]
-            && e.y < this.interactionRect[1] + this.interactionRect[3]
+            e.x < this.interactionRect[0]
+            || e.x > this.interactionRect[0] + this.interactionRect[2]
+            || e.y < this.interactionRect[1]
+            || e.y > this.interactionRect[1] + this.interactionRect[3]
         ) return;
         this._inTouch = true;
     }
-    handlePointerDrag = (e: PointerMoveEvent) => {
+    handlePointerDrag = (e: PointerDragEvent) => {
+        if (!this._inTouch) return;
         const newValue = this.getValueFromDelta(e);
-        this.setParamValue("value", newValue);
-        this._inTouch = true;
+        if (newValue !== this.params.value) this.setParamValue("value", newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

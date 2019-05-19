@@ -4,7 +4,8 @@ declare interface PointerDownEvent {
     originalEvent: MouseEvent | TouchEvent;
 }
 
-declare interface PointerMoveEvent {
+declare interface PointerDragEvent {
+    prevValue: number;
     x: number;
     y: number;
     fromX: number;

@@ -104,17 +104,18 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.lineTo(width * 0.5, height - (fontsize + padding));
             ctx.stroke();
 
+            const interactionWidth = width * 0.5;
             this.interactionRect = [
-                width * 0.5 - lineWidth / 2,
+                width * 0.5 - interactionWidth / 2,
                 fontsize + padding,
-                lineWidth,
+                interactionWidth,
                 height - 2 * (fontsize + padding)
             ];
 
             ctx.lineWidth = 1;
             ctx.strokeStyle = tribordercolor;
             const triOrigin: [number, number] = [
-                this.interactionRect[0] + lineWidth + 0.5,
+                width * 0.5 + lineWidth / 2 + 0.5,
                 this.interactionRect[1] - 4 + this.interactionRect[3] * (1 - distance)
             ];
             ctx.beginPath();
@@ -138,18 +139,19 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.lineTo(width - padding, height * 0.5);
             ctx.stroke();
 
+            const interactionWidth = height * 0.5;
             this.interactionRect = [
                 padding,
-                height * 0.5 - lineWidth,
+                height * 0.5 - interactionWidth / 2,
                 width - 2 * padding,
-                lineWidth
+                interactionWidth
             ];
 
             ctx.lineWidth = 1;
             ctx.strokeStyle = tribordercolor;
             const triOrigin: [number, number] = [
                 this.interactionRect[0] + this.interactionRect[2] * distance - 4,
-                this.interactionRect[1] + this.interactionRect[3] + 2
+                height * 0.5 + lineWidth / 2 + 2
             ];
             ctx.beginPath();
             ctx.moveTo(triOrigin[0], triOrigin[1] + 8);
@@ -183,19 +185,19 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
     handlePointerDown = (e: PointerDownEvent) => {
         const { relative, value } = this.params;
         if (
-            e.x > this.interactionRect[0]
-            && e.x < this.interactionRect[0] + this.interactionRect[2]
-            && e.y > this.interactionRect[1]
-            && e.y < this.interactionRect[1] + this.interactionRect[3]
+            e.x < this.interactionRect[0]
+            || e.x > this.interactionRect[0] + this.interactionRect[2]
+            || e.y < this.interactionRect[1]
+            || e.y > this.interactionRect[1] + this.interactionRect[3]
         ) return;
         const newValue = this.getValueFromPos(e);
         if (newValue !== value) this.setParamValue("value", this.getValueFromPos(e));
         this._inTouch = true;
     }
-    handlePointerDrag = (e: PointerMoveEvent) => {
+    handlePointerDrag = (e: PointerDragEvent) => {
+        if (!this._inTouch) return;
         const newValue = this.getValueFromPos(e);
-        this.setParamValue("value", newValue);
-        this._inTouch = true;
+        if (newValue !== this.params.value) this.setParamValue("value", newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

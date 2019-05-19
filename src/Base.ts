@@ -60,12 +60,13 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         const rect = this.canvas.getBoundingClientRect();
         const fromX = e.pageX - rect.left;
         const fromY = e.pageY - rect.top;
+        const prevValue = this.params.value;
         this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleMouseMove = (e: MouseEvent) => {
             e.preventDefault();
             const x = e.pageX - rect.left;
             const y = e.pageY - rect.top;
-            this.handlePointerDrag({ x, y, fromX, fromY, movementX: e.movementX, movementY: e.movementY, originalEvent: e });
+            this.handlePointerDrag({ prevValue, x, y, fromX, fromY, movementX: e.movementX, movementY: e.movementY, originalEvent: e });
         };
         const handleMouseUp = (e: MouseEvent) => {
             e.preventDefault();
@@ -82,7 +83,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     handleMouseOut = (e: MouseEvent) => {};
     handleContextMenu = (e: MouseEvent) => {};
     handlePointerDown = (e: PointerDownEvent) => {};
-    handlePointerDrag = (e: PointerMoveEvent) => {};
+    handlePointerDrag = (e: PointerDragEvent) => {};
     handlePointerUp = (e: PointerUpEvent) => {};
 
     constructor() {
@@ -118,10 +119,12 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     fetchAttribute() {
         for (let i = 0; i < this.root.host.attributes.length; i++) {
             const attr = this.root.host.attributes[i];
-            this.params[attr.name] = attr.value;
+            const { name, value } = attr;
+            this.params[name] = value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value;
         }
     }
     attributeChangedCallback(key: string, oldValue: string, value: string) {
+        if (!this.isConnected) return;
         if (typeof value === "undefined" || value === null) return;
         this.setParamValue(key, value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value);
     }
