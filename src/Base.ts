@@ -1,25 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "./Base.scss";
-
-export interface PointerDownEvent {
-    x: number;
-    y: number;
-    originalEvent: MouseEvent | TouchEvent;
-}
-
-export interface PointerMoveEvent {
-    x: number;
-    y: number;
-    movementX: number;
-    movementY: number;
-    originalEvent: MouseEvent | TouchEvent;
-}
-
-export interface PointerUpEvent {
-    x: number;
-    y: number;
-    originalEvent: MouseEvent | TouchEvent;
-}
+import { toMIDI } from "./utils";
 
 export class LiveBaseComponent extends HTMLElement {
     root: ShadowRoot;
@@ -34,10 +15,40 @@ export class LiveBaseComponent extends HTMLElement {
     }
 }
 
-export class LiveComponent extends LiveBaseComponent {
+export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
+    static params: LiveParams = {
+        value: 0,
+        active: true,
+        width: 15,
+        height: 15,
+        shortname: "",
+        longname: "",
+        order: 0,
+        linknames: false,
+        type: "float",
+        mmin: 0,
+        mmax: 1,
+        enum: [],
+        enum_icons: [],
+        modmode: "none",
+        initial_enable: false,
+        initial: [0],
+        unitstyle: "float",
+        units: "",
+        exponent: 1,
+        step: 0,
+        steps: 0,
+        speedlim: 5,
+        defer: false,
+        invisible: "automated",
+        mappable: true
+    }
+    static get observedAttributes() {
+        return Object.keys(this.params);
+    }
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    params: { [key: string]: any } = {};
+    params: T;
 
     handleKeyDown = (e: KeyboardEvent) => {};
     handleKeyUp = (e: KeyboardEvent) => {};
@@ -47,14 +58,14 @@ export class LiveComponent extends LiveBaseComponent {
     handleMouseDown = (e: MouseEvent) => {
         e.preventDefault();
         const rect = this.canvas.getBoundingClientRect();
-        const x = e.pageX - rect.left;
-        const y = e.pageY - rect.top;
-        this.handlePointerDown({ x, y, originalEvent: e });
+        const fromX = e.pageX - rect.left;
+        const fromY = e.pageY - rect.top;
+        this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleMouseMove = (e: MouseEvent) => {
             e.preventDefault();
             const x = e.pageX - rect.left;
             const y = e.pageY - rect.top;
-            this.handlePointerMove({ x, y, movementX: e.movementX, movementY: e.movementY, originalEvent: e });
+            this.handlePointerDrag({ x, y, fromX, fromY, movementX: e.movementX, movementY: e.movementY, originalEvent: e });
         };
         const handleMouseUp = (e: MouseEvent) => {
             e.preventDefault();
@@ -71,7 +82,7 @@ export class LiveComponent extends LiveBaseComponent {
     handleMouseOut = (e: MouseEvent) => {};
     handleContextMenu = (e: MouseEvent) => {};
     handlePointerDown = (e: PointerDownEvent) => {};
-    handlePointerMove = (e: PointerMoveEvent) => {};
+    handlePointerDrag = (e: PointerMoveEvent) => {};
     handlePointerUp = (e: PointerUpEvent) => {};
 
     constructor() {
@@ -86,6 +97,23 @@ export class LiveComponent extends LiveBaseComponent {
         this.addEventListener("mouseout", this.handleMouseOut);
         this.canvas = this.root.children[0] as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d");
+        this.params = (this.constructor as typeof LiveComponent).params as T;
+    }
+    get displayValue() {
+        const { value, type, unitstyle, units } = this.params;
+        if (type === "enum") return this.params.enum[value];
+        if (unitstyle === "int") return value.toFixed(0);
+        if (unitstyle === "float") return value.toFixed(2);
+        if (unitstyle === "time") return value.toFixed(type === "int" ? 0 : 2) + " ms";
+        if (unitstyle === "hertz") return value.toFixed(type === "int" ? 0 : 2) + " Hz";
+        if (unitstyle === "decibel") return value.toFixed(type === "int" ? 0 : 2) + " dB";
+        if (unitstyle === "%") return value.toFixed(type === "int" ? 0 : 2) + " %";
+        if (unitstyle === "pan") return value === 0 ? "C" : (type === "int" ? Math.abs(value) : Math.abs(value).toFixed(2)) + (value < 0 ? " L" : " R");
+        if (unitstyle === "semitones") return value.toFixed(type === "int" ? 0 : 2) + " st";
+        if (unitstyle === "midi") return toMIDI(value);
+        if (unitstyle === "custom") return value.toFixed(type === "int" ? 0 : 2) + " " + units;
+        if (unitstyle === "native") return value.toFixed(type === "int" ? 0 : 2);
+        return "N/A";
     }
     fetchAttribute() {
         for (let i = 0; i < this.root.host.attributes.length; i++) {
@@ -93,12 +121,19 @@ export class LiveComponent extends LiveBaseComponent {
             this.params[attr.name] = attr.value;
         }
     }
+    attributeChangedCallback(key: string, oldValue: string, value: string) {
+        if (typeof value === "undefined" || value === null) return;
+        this.setParamValue(key, value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value);
+    }
+    connectedCallback() {
+        this.fetchAttribute();
+        this.paint();
+    }
     setParamValue(key: string, value: any) {
         this.params[key] = value;
-        this.paint(this.ctx, this.params);
+        this.paint();
     }
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    paint(ctx: CanvasRenderingContext2D, params: { [key: string]: any }) {}
+    paint() {}
     render() {
         return "<canvas></canvas>";
     }

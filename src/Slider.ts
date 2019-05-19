@@ -1,12 +1,12 @@
 /* eslint-disable @typescript-eslint/camelcase */
-import { LiveComponent, PointerMoveEvent } from "./Base";
+import { LiveComponent } from "./Base";
 
-type TLiveSliderParams = {
-    displayvalue: string;
+interface LiveSliderParams extends LiveParams {
+    relative: boolean;
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
-    orientation: "Vertical" | "Horizontal";
+    orientation: "vertical" | "horizontal";
     showname: boolean;
     shownumber: boolean;
     slidercolor: string;
@@ -14,54 +14,62 @@ type TLiveSliderParams = {
     tribordercolor: string;
     trioncolor: string;
     tricolor: string;
-    distance: number;
-    relative: "Absolute" | "Relative";
-    width: number;
-    height: number;
-    _parameter_shortname: string;
-    _parameter_range: number[] | string[];
-    _parameter_steps: number;
-    _parameter_type: "Enum" | "Int (0-255)" | "Float";
 }
 
-export default class LiveSlider extends LiveComponent {
-    params: TLiveSliderParams = {
-        displayvalue: "0",
-        fontname: "Arial",
-        fontsize: 9.5,
-        fontface: "regular",
-        orientation: "Vertical",
-        showname: true,
-        shownumber: true,
-        slidercolor: "rgba(40, 40, 40, 1)",
-        textcolor: "rgba(0, 0, 0, 1)",
-        tribordercolor: "rgba(80, 80, 80, 1)",
-        trioncolor: "rgba(0, 0, 0, 1)",
-        tricolor: "rgba(165, 165, 165, 1)",
-        distance: 0,
-        relative: "Absolute",
-        width: 40,
-        height: 90,
-        _parameter_shortname: "live.slider",
-        _parameter_range: [0, 127],
-        _parameter_steps: 127,
-        _parameter_type: "Int (0-255)"
-    };
+export default class LiveSlider extends LiveComponent<LiveSliderParams> {
+    static get params(): LiveSliderParams {
+        return {
+            ...super.params,
+            fontname: "Arial",
+            fontsize: 10,
+            fontface: "regular",
+            orientation: "vertical",
+            showname: true,
+            shownumber: true,
+            slidercolor: "rgba(40, 40, 40, 1)",
+            textcolor: "rgba(0, 0, 0, 1)",
+            tribordercolor: "rgba(80, 80, 80, 1)",
+            trioncolor: "rgba(0, 0, 0, 1)",
+            tricolor: "rgba(165, 165, 165, 1)",
+            relative: false,
+            width: 40,
+            height: 90,
+            shortname: "live.slider",
+            mmin: 0,
+            mmax: 127,
+            type: "int"
+        };
+    }
     _inTouch: boolean = false;
     interactionRect: number[] = [0, 0, 0, 0];
 
-    constructor() {
-        super();
+    get trueSteps() {
+        const { orientation, type, mmax, mmin, steps, step } = this.params;
+        const full = this.interactionRect[orientation === "vertical" ? 3 : 2];
+        const maxSteps = type === "enum" ? this.params.enum.length : type === "int" ? mmax - mmin : full;
+        if (step) {
+            if (type === "enum") return this.params.enum.length;
+            if (type === "int") return Math.min(Math.floor((mmax - mmin) / Math.round(step)), maxSteps);
+            return Math.min(Math.floor((mmax - mmin) / step), maxSteps);
+        }
+        if (steps) return Math.min(steps, maxSteps);
+        return maxSteps;
     }
-    connectedCallback() {
-        this.fetchAttribute();
-        this.paint(this.ctx, this.params);
+    get distance() {
+        const { type, mmax, mmin, value } = this.params;
+        return type === "enum" ? value / this.params.enum.length : value / (mmax - mmin);
     }
-    paint(ctx: CanvasRenderingContext2D, paramsIn: TLiveSliderParams) {
+    get stepRange() {
+        const { orientation, type, mmax, mmin, step } = this.params;
+        const full = this.interactionRect[orientation === "vertical" ? 3 : 2];
+        if (step) return type === "enum" ? full / this.params.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
+        const trueSteps = this.trueSteps;
+        return full / trueSteps;
+    }
+    paint() {
         const {
             width,
             height,
-            displayvalue,
             fontname,
             fontsize,
             fontface,
@@ -73,12 +81,14 @@ export default class LiveSlider extends LiveComponent {
             tribordercolor,
             trioncolor,
             tricolor,
-            _parameter_shortname,
-            distance
-        } = { ...this.params, ...paramsIn };
+            shortname
+        } = this.params;
+        const ctx = this.ctx;
         const lineWidth = 0.5;
         const padding = 8;
         const popoverType = "VALUE_LABEL";
+        const distance = this.distance;
+        const displayValue = this.displayValue;
 
         ctx.canvas.style.width = width + "px";
         ctx.canvas.style.height = height + "px";
@@ -88,7 +98,7 @@ export default class LiveSlider extends LiveComponent {
         ctx.lineWidth = lineWidth;
         ctx.strokeStyle = slidercolor;
 
-        if (orientation === "Vertical") {
+        if (orientation === "vertical") {
             ctx.beginPath();
             ctx.moveTo(width * 0.5, fontsize + padding);
             ctx.lineTo(width * 0.5, height - (fontsize + padding));
@@ -120,8 +130,8 @@ export default class LiveSlider extends LiveComponent {
             ctx.font = `${fontface} ${fontsize} ${fontname}, sans-serif`;
             ctx.textAlign = "center";
             ctx.fillStyle = textcolor;
-            if (showname) ctx.fillText(_parameter_shortname, width / 2, fontsize, width);
-            if (shownumber) ctx.fillText(displayvalue, width / 2, height, width);
+            if (showname) ctx.fillText(shortname, width / 2, fontsize, width);
+            if (shownumber) ctx.fillText(displayValue, width / 2, height, width);
         } else {
             ctx.beginPath();
             ctx.moveTo(padding, height * 0.5);
@@ -154,16 +164,37 @@ export default class LiveSlider extends LiveComponent {
             ctx.font = `${fontface} ${fontsize} ${fontname}, sans-serif`;
             ctx.textAlign = "center";
             ctx.fillStyle = textcolor;
-            if (showname) ctx.fillText(_parameter_shortname, width / 2, fontsize, width);
+            if (showname) ctx.fillText(shortname, width / 2, fontsize, width);
             ctx.textAlign = "left";
-            if (shownumber) ctx.fillText(displayvalue, 4, height, width);
+            if (shownumber) ctx.fillText(displayValue, 4, height, width);
         }
     }
-    handlePointerDown = () => {
-        const { orientation, relative } = this.params;
+    getValueFromPos(e: { x: number; y: number }) {
+        const { orientation, type, mmin, mmax } = this.params;
+        const stepRange = this.stepRange;
+        const trueSteps = this.trueSteps;
+        const step = this.params.step || (mmax - mmin) / trueSteps;
+        let steps = Math.round((orientation === "vertical" ? this.interactionRect[3] - (e.y - this.interactionRect[1]) : e.x - this.interactionRect[0]) / stepRange);
+        steps = Math.min(trueSteps, Math.max(0, steps));
+        if (type === "enum") return steps;
+        if (type === "int") return Math.round(steps * step + mmin);
+        return steps * step + mmin;
+    }
+    handlePointerDown = (e: PointerDownEvent) => {
+        const { relative, value } = this.params;
+        if (
+            e.x > this.interactionRect[0]
+            && e.x < this.interactionRect[0] + this.interactionRect[2]
+            && e.y > this.interactionRect[1]
+            && e.y < this.interactionRect[1] + this.interactionRect[3]
+        ) return;
+        const newValue = this.getValueFromPos(e);
+        if (newValue !== value) this.setParamValue("value", this.getValueFromPos(e));
         this._inTouch = true;
     }
-    handlePointerMove = (e: PointerMoveEvent) => {
+    handlePointerDrag = (e: PointerMoveEvent) => {
+        const newValue = this.getValueFromPos(e);
+        this.setParamValue("value", newValue);
         this._inTouch = true;
     }
     handlePointerUp = () => {

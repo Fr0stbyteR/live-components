@@ -1,41 +1,31 @@
 import { LiveComponent } from "./Base";
 
-type TLiveButtonParams = {
-    active: boolean;
+interface LiveButtonParams extends LiveParams {
     activebgcolor: string;
     activebgoncolor: string;
     bgcolor: string;
     bgoncolor: string;
     bordercolor: string;
     focusbordercolor: string;
-    value: boolean;
-    width: number;
-    height: number;
 }
 
-export default class LiveButton extends LiveComponent {
-    params: TLiveButtonParams = {
-        active: true,
-        activebgcolor: "rgba(102, 102, 102, 1)",
-        activebgoncolor: "rgba(242, 98, 0, 1)",
-        bgcolor: "rgba(102, 102, 102, 1)",
-        bgoncolor: "rgba(125, 123, 122, 1)",
-        bordercolor: "rgba(50, 50, 50, 1)",
-        focusbordercolor: "rgba(0, 5, 20, 1)",
-        value: false,
-        width: 15,
-        height: 15
-    };
+export default class LiveButton extends LiveComponent<LiveButtonParams> {
+    static get params(): LiveButtonParams {
+        return {
+            ...super.params,
+            width: 15,
+            height: 15,
+            activebgcolor: "rgba(102, 102, 102, 1)",
+            activebgoncolor: "rgba(242, 98, 0, 1)",
+            bgcolor: "rgba(102, 102, 102, 1)",
+            bgoncolor: "rgba(125, 123, 122, 1)",
+            bordercolor: "rgba(50, 50, 50, 1)",
+            focusbordercolor: "rgba(0, 5, 20, 1)"
+        };
+    }
     _inTouch: boolean = false;
 
-    constructor() {
-        super();
-    }
-    connectedCallback() {
-        this.fetchAttribute();
-        this.paint(this.ctx, this.params);
-    }
-    paint(ctx: CanvasRenderingContext2D, paramsIn: TLiveButtonParams) {
+    paint() {
         const {
             active,
             activebgcolor,
@@ -47,7 +37,9 @@ export default class LiveButton extends LiveComponent {
             value,
             width,
             height
-        } = { ...this.params, ...paramsIn };
+        } = this.params;
+        const ctx = this.ctx;
+
         const borderWidth = 0.5;
 
         ctx.canvas.style.width = width + "px";
