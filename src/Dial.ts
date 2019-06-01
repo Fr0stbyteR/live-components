@@ -27,7 +27,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
         return {
             ...super.params,
             fontname: "Arial",
-            fontsize: 10,
+            fontsize: 12,
             fontface: "regular",
             appearance: "vertical",
             triangle: false,
@@ -215,7 +215,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
         ctx.lineTo(valuePosX, valuePosY);
         ctx.stroke();
         // add text if it is enabled
-        ctx.font = `${fontface} ${fontsize} ${fontname}, sans-serif`;
+        ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
         ctx.fillStyle = textcolor;
         if (showname) {
             if (appearance === "tiny") {

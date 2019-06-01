@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveButtonParams extends LiveParams {
+interface LiveToggleParams extends LiveParams {
     activebgcolor: string;
     activebgoncolor: string;
     bgcolor: string;
@@ -9,21 +9,20 @@ interface LiveButtonParams extends LiveParams {
     focusbordercolor: string;
 }
 
-export default class LiveButton extends LiveComponent<LiveButtonParams> {
-    static get params(): LiveButtonParams {
+export default class LiveToggle extends LiveComponent<LiveToggleParams> {
+    static get params(): LiveToggleParams {
         return {
             ...super.params,
             width: 15,
             height: 15,
-            activebgcolor: "rgba(90, 90, 90, 1)",
-            activebgoncolor: "rgba(109, 215, 255, 1)",
-            bgcolor: "rgba(90, 90, 90, 1)",
+            activebgcolor: "rgba(165, 165, 165, 1)",
+            activebgoncolor: "rgba(255, 181, 50, 1)",
+            bgcolor: "rgba(165, 165, 165, 1)",
             bgoncolor: "rgba(195, 195, 195, 1)",
             bordercolor: "rgba(80, 80, 80, 1)",
             focusbordercolor: "rgba(80, 80, 80, 1)"
         };
     }
-    _inTouch: boolean = false;
 
     paint() {
         const {
@@ -53,24 +52,13 @@ export default class LiveButton extends LiveComponent<LiveButtonParams> {
 
         ctx.fillStyle = buttonBgColor;
         ctx.beginPath();
-        ctx.ellipse(width * 0.5, height * 0.5, width * 0.5 - 2 * borderWidth, height * 0.5 - 2 * borderWidth, 0, 0, 2 * Math.PI);
+        ctx.rect(borderWidth, borderWidth, width - 2 * borderWidth, height - 2 * borderWidth);
         ctx.fill();
         ctx.strokeStyle = buttonBorderColor;
         ctx.stroke();
-
-        if (value && !this._inTouch) {
-            setTimeout(() => this.setParamValue("value", 0), 100);
-        }
     }
     handlePointerDown = () => {
-        this._inTouch = true;
-        this.setParamValue("value", 1);
-    }
-    handlePointerUp = () => {
-        this._inTouch = false;
-        this.setParamValue("value", 0);
-    }
-    resetPointers() {
-        this._inTouch = false;
+        const { value } = this.params;
+        this.setParamValue("value", 1 - value);
     }
 }

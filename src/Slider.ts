@@ -21,7 +21,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
         return {
             ...super.params,
             fontname: "Arial",
-            fontsize: 10,
+            fontsize: 12,
             fontface: "regular",
             orientation: "vertical",
             showname: true,
@@ -128,7 +128,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.fillStyle = this._inTouch ? trioncolor : tricolor;
             ctx.fill();
 
-            ctx.font = `${fontface} ${fontsize} ${fontname}, sans-serif`;
+            ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
             ctx.textAlign = "center";
             ctx.fillStyle = textcolor;
             if (showname) ctx.fillText(shortname, width / 2, fontsize, width);
@@ -163,7 +163,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.fillStyle = this._inTouch ? trioncolor : tricolor;
             ctx.fill();
 
-            ctx.font = `${fontface} ${fontsize} ${fontname}, sans-serif`;
+            ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
             ctx.textAlign = "center";
             ctx.fillStyle = textcolor;
             if (showname) ctx.fillText(shortname, width / 2, fontsize, width);
