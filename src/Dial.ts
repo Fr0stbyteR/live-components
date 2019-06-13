@@ -26,6 +26,9 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
     static get params(): LiveDialParams {
         return {
             ...super.params,
+            shortname: "live.dial",
+            width: 45,
+            height: 45,
             fontname: "Arial",
             fontsize: 12,
             fontface: "regular",
@@ -43,9 +46,6 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             textcolor: "rgba(0, 0, 0, 1)",
             tribordercolor: "rgba(50, 50, 50, 1)",
             tricolor: "rgba(40, 40, 40, 1)",
-            width: 45,
-            height: 45,
-            shortname: "live.dial",
             mmin: 0,
             mmax: 127,
             type: "int"

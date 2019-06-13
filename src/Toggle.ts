@@ -13,6 +13,7 @@ export default class LiveToggle extends LiveComponent<LiveToggleParams> {
     static get params(): LiveToggleParams {
         return {
             ...super.params,
+            shortname: "live.toggle",
             width: 15,
             height: 15,
             activebgcolor: "rgba(165, 165, 165, 1)",

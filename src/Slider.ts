@@ -20,6 +20,9 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
     static get params(): LiveSliderParams {
         return {
             ...super.params,
+            shortname: "live.slider",
+            width: 40,
+            height: 90,
             fontname: "Arial",
             fontsize: 12,
             fontface: "regular",
@@ -32,9 +35,6 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             trioncolor: "rgba(0, 0, 0, 1)",
             tricolor: "rgba(165, 165, 165, 1)",
             relative: false,
-            width: 40,
-            height: 90,
-            shortname: "live.slider",
             mmin: 0,
             mmax: 127,
             type: "int"

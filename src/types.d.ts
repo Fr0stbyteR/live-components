@@ -47,5 +47,4 @@ declare interface LiveParams {
     defer: boolean;
     invisible: "automated" | "stored" | "hidden";
     mappable: boolean;
-    [key: string]: any;
 }

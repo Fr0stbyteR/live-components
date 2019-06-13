@@ -13,6 +13,7 @@ export default class LiveButton extends LiveComponent<LiveButtonParams> {
     static get params(): LiveButtonParams {
         return {
             ...super.params,
+            shortname: "live.button",
             width: 15,
             height: 15,
             activebgcolor: "rgba(90, 90, 90, 1)",

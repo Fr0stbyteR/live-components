@@ -120,7 +120,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         for (let i = 0; i < this.root.host.attributes.length; i++) {
             const attr = this.root.host.attributes[i];
             const { name, value } = attr;
-            this.params[name] = value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value;
+            (this.params as any)[name] = value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value;
         }
     }
     attributeChangedCallback(key: string, oldValue: string, value: string) {
@@ -133,7 +133,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         this.paint();
     }
     setParamValue(key: string, value: any) {
-        this.params[key] = value;
+        (this.params as any)[key] = value;
         this.paint();
     }
     paint() {}
