@@ -124,7 +124,8 @@ export default class LiveNumbox extends LiveComponent<LiveNumboxParams> {
         ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
         ctx.fillStyle = textcolor;
         ctx.textAlign = "center";
-        ctx.fillText(displayValue, width / 2, (height + fontsize) * 0.5, width);
+        ctx.textBaseline = "middle";
+        ctx.fillText(displayValue, width / 2, height / 2, width);
     }
     getValueFromDelta(e: PointerDragEvent) {
         const { type, mmin, mmax } = this.params;

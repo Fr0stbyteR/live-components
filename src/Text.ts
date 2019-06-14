@@ -98,8 +98,9 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
 
         ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
         ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
         ctx.fillStyle = active ? (value ? activetextoncolor : activetextcolor) : (value ? textoncolor : textcolor);
-        ctx.fillText(value && mode === "toggle" ? texton : text, width * 0.5, (height + fontsize) * 0.5);
+        ctx.fillText(value && mode === "toggle" ? texton : text, width / 2, height / 2);
     }
     handlePointerDown = () => {
         const { value, mode } = this.params;

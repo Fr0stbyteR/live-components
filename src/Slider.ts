@@ -85,7 +85,6 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
         const ctx = this.ctx;
         const lineWidth = 0.5;
         const padding = 8;
-        const popoverType = "VALUE_LABEL";
         const distance = this.distance;
         const displayValue = this.displayValue;
 
@@ -182,7 +181,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
         return steps * step + mmin;
     }
     handlePointerDown = (e: PointerDownEvent) => {
-        const { relative, value } = this.params;
+        const { value } = this.params;
         if (
             e.x < this.interactionRect[0]
             || e.x > this.interactionRect[0] + this.interactionRect[2]
