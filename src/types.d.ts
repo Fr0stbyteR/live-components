@@ -24,6 +24,7 @@ declare interface PointerUpEvent {
 declare interface LiveParams {
     value: number;
     active: boolean;
+    focus: boolean;
     width: number;
     height: number;
     shortname: string;

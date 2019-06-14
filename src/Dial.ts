@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { LiveComponent } from "./Base";
 import { toRad, roundedRect, fillRoundedRect } from "./utils";
 
@@ -68,7 +67,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
     }
     get distance() {
         const { type, mmax, mmin, value } = this.params;
-        return type === "enum" ? value / this.params.enum.length : value / (mmax - mmin);
+        return type === "enum" ? value / this.params.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
         const { type, mmax, mmin, step } = this.params;
@@ -82,6 +81,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             width,
             height,
             active,
+            focus,
             fontname,
             fontsize,
             fontface,
@@ -90,6 +90,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             showname,
             shownumber,
             bordercolor,
+            focusbordercolor,
             panelcolor,
             activeneedlecolor,
             needlecolor,
@@ -157,7 +158,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
 
         if (appearance === "panel") {
             panelOffset = 5;
-            ctx.strokeStyle = bordercolor;
+            ctx.strokeStyle = focus ? focusbordercolor : bordercolor;
             ctx.lineWidth = 0.4;
             roundedRect(ctx, 1, 1, width - 2, height - 2, 5);
             ctx.fillStyle = panelcolor;

@@ -19,6 +19,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     static params: LiveParams = {
         value: 0,
         active: true,
+        focus: false,
         width: 15,
         height: 15,
         shortname: "",
@@ -57,6 +58,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     handleClick = (e: MouseEvent) => {};
     handleMouseDown = (e: MouseEvent) => {
         e.preventDefault();
+        this.canvas.focus();
         const rect = this.canvas.getBoundingClientRect();
         const fromX = e.pageX - rect.left;
         const fromY = e.pageY - rect.top;
@@ -85,6 +87,14 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     handlePointerDown = (e: PointerDownEvent) => {};
     handlePointerDrag = (e: PointerDragEvent) => {};
     handlePointerUp = (e: PointerUpEvent) => {};
+    handleFocusIn = (e: FocusEvent) => {
+        this.params.focus = true;
+        this.paint();
+    }
+    handleFocusOut = (e: FocusEvent) => {
+        this.params.focus = false;
+        this.paint();
+    }
 
     constructor() {
         super();
@@ -96,6 +106,8 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         this.addEventListener("mousedown", this.handleMouseDown, { passive: false });
         this.addEventListener("mouseover", this.handleMouseOver);
         this.addEventListener("mouseout", this.handleMouseOut);
+        this.addEventListener("focusin", this.handleFocusIn);
+        this.addEventListener("focusout", this.handleFocusOut);
         this.canvas = this.root.children[0] as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d");
         this.params = (this.constructor as typeof LiveComponent).params as T;
@@ -138,6 +150,6 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     }
     paint() {}
     render() {
-        return "<canvas></canvas>";
+        return '<canvas tabindex="1" style="outline: none;"></canvas>';
     }
 }

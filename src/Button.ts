@@ -29,6 +29,7 @@ export default class LiveButton extends LiveComponent<LiveButtonParams> {
     paint() {
         const {
             active,
+            focus,
             activebgcolor,
             activebgoncolor,
             bgcolor,
@@ -50,7 +51,7 @@ export default class LiveButton extends LiveComponent<LiveButtonParams> {
         ctx.lineWidth = borderWidth;
 
         const buttonBgColor = active ? (value ? activebgoncolor : activebgcolor) : (value ? bgoncolor : bgcolor);
-        const buttonBorderColor = value ? focusbordercolor : bordercolor;
+        const buttonBorderColor = focus ? focusbordercolor : bordercolor;
 
         ctx.fillStyle = buttonBgColor;
         ctx.beginPath();

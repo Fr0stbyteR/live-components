@@ -28,7 +28,7 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
             width: 90,
             height: 45,
             fontname: "Arial",
-            fontsize: 12,
+            fontsize: 10,
             fontface: "regular",
             activebgcolor: "rgba(165, 165, 165, 1)",
             activebgoncolor: "rgba(255, 181, 50, 1)",
@@ -50,6 +50,7 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
     paint() {
         const {
             active,
+            focus,
             fontname,
             fontsize,
             fontface,
@@ -81,7 +82,7 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
         ctx.lineWidth = borderWidth;
 
         const buttonBgColor = active ? (value ? activebgoncolor : activebgcolor) : (value ? bgoncolor : bgcolor);
-        const buttonBorderColor = value ? focusbordercolor : bordercolor;
+        const buttonBorderColor = focus ? focusbordercolor : bordercolor;
 
         ctx.fillStyle = buttonBgColor;
         if (mode === "button") {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/camelcase */
 import { LiveComponent } from "./Base";
 
 interface LiveSliderParams extends LiveParams {
@@ -57,7 +56,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
     }
     get distance() {
         const { type, mmax, mmin, value } = this.params;
-        return type === "enum" ? value / this.params.enum.length : value / (mmax - mmin);
+        return type === "enum" ? value / this.params.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
         const { orientation, type, mmax, mmin, step } = this.params;
