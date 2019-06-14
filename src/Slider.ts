@@ -104,7 +104,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
 
             const interactionWidth = width * 0.5;
             this.interactionRect = [
-                width * 0.5 - interactionWidth / 2,
+                width * 0.5 - interactionWidth * 0.5,
                 fontsize + padding,
                 interactionWidth,
                 height - 2 * (fontsize + padding)
@@ -113,7 +113,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.lineWidth = 1;
             ctx.strokeStyle = tribordercolor;
             const triOrigin: [number, number] = [
-                width * 0.5 + lineWidth / 2 + 0.5,
+                width * 0.5 + lineWidth * 0.5 + 0.5,
                 this.interactionRect[1] - 4 + this.interactionRect[3] * (1 - distance)
             ];
             ctx.beginPath();
@@ -129,8 +129,8 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
             ctx.textAlign = "center";
             ctx.fillStyle = textcolor;
-            if (showname) ctx.fillText(shortname, width / 2, fontsize, width);
-            if (shownumber) ctx.fillText(displayValue, width / 2, height, width);
+            if (showname) ctx.fillText(shortname, width * 0.5, fontsize, width);
+            if (shownumber) ctx.fillText(displayValue, width * 0.5, height, width);
         } else {
             ctx.beginPath();
             ctx.moveTo(padding, height * 0.5);
@@ -140,7 +140,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             const interactionWidth = height * 0.5;
             this.interactionRect = [
                 padding,
-                height * 0.5 - interactionWidth / 2,
+                height * 0.5 - interactionWidth * 0.5,
                 width - 2 * padding,
                 interactionWidth
             ];
@@ -149,7 +149,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.strokeStyle = tribordercolor;
             const triOrigin: [number, number] = [
                 this.interactionRect[0] + this.interactionRect[2] * distance - 4,
-                height * 0.5 + lineWidth / 2 + 2
+                height * 0.5 + lineWidth * 0.5 + 2
             ];
             ctx.beginPath();
             ctx.moveTo(triOrigin[0], triOrigin[1] + 8);
@@ -164,7 +164,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             ctx.font = `${fontface === "regular" ? "" : fontface} ${fontsize}px ${fontname}, sans-serif`;
             ctx.textAlign = "center";
             ctx.fillStyle = textcolor;
-            if (showname) ctx.fillText(shortname, width / 2, fontsize, width);
+            if (showname) ctx.fillText(shortname, width * 0.5, fontsize, width);
             ctx.textAlign = "left";
             if (shownumber) ctx.fillText(displayValue, 4, height, width);
         }

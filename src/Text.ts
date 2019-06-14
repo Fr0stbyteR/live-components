@@ -86,7 +86,7 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
 
         ctx.fillStyle = buttonBgColor;
         if (mode === "button") {
-            fillRoundedRect(ctx, 0.5, 0.5, width - 1, height - 1, height / 2 - 1);
+            fillRoundedRect(ctx, 0.5, 0.5, width - 1, height - 1, height * 0.5 - 1);
         } else {
             ctx.beginPath();
             ctx.rect(0.5, 0.5, width - 1, height - 1);
@@ -100,7 +100,7 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
         ctx.fillStyle = active ? (value ? activetextoncolor : activetextcolor) : (value ? textoncolor : textcolor);
-        ctx.fillText(value && mode === "toggle" ? texton : text, width / 2, height / 2);
+        ctx.fillText(value && mode === "toggle" ? texton : text, width * 0.5, height * 0.5);
     }
     handlePointerDown = () => {
         const { value, mode } = this.params;

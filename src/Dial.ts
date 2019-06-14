@@ -120,7 +120,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
 
         if (appearance === "tiny") {
             dialHeight = 18;
-            start = -3 * Math.PI / 2;
+            start = -3 * Math.PI * 0.5;
             end = 0;
             valPos = start + toRad(this.distance * 270);
         } else {
@@ -129,7 +129,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             end = 2 * Math.PI + 3 * Math.PI / 8;
             valPos = start + toRad(this.distance * 315);
         }
-        const dialRadius = dialHeight / 2;
+        const dialRadius = dialHeight * 0.5;
 
         let dialCenterX = width * 0.5;
         let dialCenterY = height * 0.5 + 1;
@@ -145,7 +145,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
                 dialCenterX = 10;
             }
         }
-        this.interactionRect = [0, dialCenterY - dialHeight / 2, width, dialHeight];
+        this.interactionRect = [0, dialCenterY - dialHeight * 0.5, width, dialHeight];
         const arcStartX = dialCenterX + (dialHeight * 0.5 * Math.cos(start));
         const arcStartY = dialCenterY + (dialHeight * 0.5 * Math.sin(start));
         const arcEndX = dialCenterX + (dialHeight * 0.5 * Math.cos(end));
@@ -184,7 +184,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
         ctx.strokeStyle = active ? activedialcolor : dialcolor;
         ctx.fillStyle = ctx.strokeStyle;
         if (triangle) {
-            const midpoint = (start + end) / 2;
+            const midpoint = (start + end) * 0.5;
             ctx.strokeStyle = active ? activedialcolor : dialcolor;
             ctx.beginPath();
             if (distance > 0.5) ctx.arc(dialCenterX, dialCenterY, dialRadius, midpoint, valPos);
@@ -224,7 +224,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
                 ctx.fillText(shortname, 0, panelOffset + fontsize, width);
             } else {
                 ctx.textAlign = "center";
-                ctx.fillText(shortname, width / 2, panelOffset + fontsize, width);
+                ctx.fillText(shortname, width * 0.5, panelOffset + fontsize, width);
             }
         }
         if (shownumber) {
@@ -234,7 +234,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
                 ctx.fillText(this.displayValue, tinyOffset, height - panelOffset, width);
             } else {
                 ctx.textAlign = "center";
-                ctx.fillText(this.displayValue, width / 2, height - panelOffset, width);
+                ctx.fillText(this.displayValue, width * 0.5, height - panelOffset, width);
             }
         }
         // draw triangle if it is enabled

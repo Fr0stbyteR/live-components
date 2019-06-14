@@ -68,8 +68,8 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
         let step = height / lines;
         let interval = 0;
         let rectWidth = 0;
-        const spacingX = spacing_x / 2;
-        const spacingY = spacing_y / 2;
+        const spacingX = spacing_x * 0.5;
+        const spacingY = spacing_y * 0.5;
 
         if (multiline && height >= 2 * minHeight) {
             lines = Math.max(1, Math.min(count, Math.floor(height / minHeight)));
@@ -90,8 +90,8 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
             rectWidth = interval - spacingX;
             for (let i = 0; i < count; i++) {
                 this.tabRects[i] = [
-                    (i % countPerLine) * interval + spacingX / 2,
-                    Math.floor(i / countPerLine) * step + spacingY / 2,
+                    (i % countPerLine) * interval + spacingX * 0.5,
+                    Math.floor(i / countPerLine) * step + spacingY * 0.5,
                     rectWidth,
                     (height / lines) - spacingY
                 ];
@@ -111,8 +111,8 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
                 for (let j = i * countPerLine; j < Math.min((i + 1) * countPerLine, count); j++) {
                     const rectSpace = textWidths[j] / total;
                     this.tabRects[j] = [
-                        used + spacingX / 2,
-                        i * step + spacingY / 2,
+                        used + spacingX * 0.5,
+                        i * step + spacingY * 0.5,
                         space * rectSpace + 2 * margin,
                         height / lines - spacingY
                     ];
@@ -169,7 +169,7 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
             ctx.textAlign = "center";
             ctx.textBaseline = "middle";
             ctx.fillStyle = active ? (value === i ? activetextoncolor : activetextcolor) : (value === i ? textoncolor : textcolor);
-            ctx.fillText(enums[i], tabRects[i][0] + tabRects[i][2] / 2, tabRects[i][1] + tabRects[i][3] / 2);
+            ctx.fillText(enums[i], tabRects[i][0] + tabRects[i][2] * 0.5, tabRects[i][1] + tabRects[i][3] * 0.5);
         }
     }
     handlePointerDown = (e: PointerDownEvent) => {

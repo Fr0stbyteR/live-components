@@ -114,7 +114,7 @@ export default class LiveNumbox extends LiveComponent<LiveNumboxParams> {
             const triangleHeight = 8;
             ctx.fillStyle = active ? (distance ? activetricolor2 : activetricolor) : (distance ? tricolor2 : tricolor);
             ctx.beginPath();
-            ctx.moveTo(width - triangleHeight - 0.5, height / 2);
+            ctx.moveTo(width - triangleHeight - 0.5, height * 0.5);
             ctx.lineTo(width - 0.5, 0.5);
             ctx.lineTo(width - 0.5, height - 0.5);
             ctx.closePath();
@@ -125,7 +125,7 @@ export default class LiveNumbox extends LiveComponent<LiveNumboxParams> {
         ctx.fillStyle = textcolor;
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText(displayValue, width / 2, height / 2, width);
+        ctx.fillText(displayValue, width * 0.5, height * 0.5, width);
     }
     getValueFromDelta(e: PointerDragEvent) {
         const { type, mmin, mmax } = this.params;
