@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "./Base.scss";
 import { toMIDI } from "./utils";
+import { LiveComponentChangeEvent } from "./ChangeEvent";
 
 export class LiveBaseComponent extends HTMLElement {
     root: ShadowRoot;
@@ -146,7 +147,14 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     }
     setParamValue(key: string, value: any) {
         (this.params as any)[key] = value;
+        if (key === "value") this.change();
         this.paint();
+    }
+    setValue(value: number) {
+        this.setParamValue("value", value);
+    }
+    change() {
+        this.dispatchEvent(new LiveComponentChangeEvent("change", { detail: { value: this.params.value, displayValue: this.displayValue } }));
     }
     paint() {}
     render() {
