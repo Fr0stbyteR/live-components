@@ -146,6 +146,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         this.paint();
     }
     setParamValue(key: string, value: any) {
+        if (!(key in this.params)) return;
         (this.params as any)[key] = value;
         if (key === "value") this.change();
         this.paint();
