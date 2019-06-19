@@ -50,6 +50,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     }
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    isConnectedPolyfill: boolean;
     params: T;
 
     handleKeyDown = (e: KeyboardEvent) => {};
@@ -137,13 +138,14 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         }
     }
     attributeChangedCallback(key: string, oldValue: string, value: string) {
-        if (!this.isConnected) return;
+        if (!this.isConnectedPolyfill) return;
         if (typeof value === "undefined" || value === null) return;
         this.setParamValue(key, value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value);
     }
     connectedCallback() {
         this.fetchAttribute();
         this.paint();
+        this.isConnectedPolyfill = true;
     }
     setParamValue(key: string, value: any) {
         if (!(key in this.params)) return;

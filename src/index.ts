@@ -1,3 +1,4 @@
+import "@webcomponents/webcomponentsjs/webcomponents-bundle";
 import LiveButton from "./Button";
 import LiveSlider from "./Slider";
 import LiveDial from "./Dial";
