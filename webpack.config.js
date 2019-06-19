@@ -7,7 +7,9 @@ const config = {
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    chunkFilename: 'js/[chunkhash].js'
+    chunkFilename: 'js/[chunkhash].js',
+    library: 'LiveComponents',
+    libraryTarget: 'umd'
   },
   node: {
     fs: 'empty'

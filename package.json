@@ -2,7 +2,8 @@
   "name": "live-components",
   "version": "0.0.1",
   "description": "WebComponent for Audio in Live style",
-  "main": "src/index.ts",
+  "main": "./dist/index.min.js",
+  "types": "./dist/index.d.ts",
   "scripts": {
     "build": "webpack --mode development",
     "dist": "npm run build && webpack --mode production"
