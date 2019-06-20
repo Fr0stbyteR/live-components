@@ -1,7 +1,7 @@
 import { LiveComponent } from "./Base";
 import { toRad, roundedRect, fillRoundedRect } from "./utils";
 
-interface LiveDialParams extends LiveParams {
+interface LiveDialProps extends LiveProps {
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
@@ -21,10 +21,10 @@ interface LiveDialParams extends LiveParams {
     tricolor: string;
 }
 
-export default class LiveDial extends LiveComponent<LiveDialParams> {
-    static get params(): LiveDialParams {
+export default class LiveDial extends LiveComponent<LiveDialProps> {
+    static get props(): LiveDialProps {
         return {
-            ...super.params,
+            ...super.props,
             shortname: "live.dial",
             width: 45,
             height: 45,
@@ -54,11 +54,11 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
     interactionRect: number[] = [0, 0, 0, 0];
 
     get trueSteps() {
-        const { type, mmax, mmin, steps, step } = this.params;
+        const { type, mmax, mmin, steps, step } = this.props;
         const full = 100;
-        const maxSteps = type === "enum" ? this.params.enum.length : type === "int" ? mmax - mmin : full;
+        const maxSteps = type === "enum" ? this.props.enum.length : type === "int" ? mmax - mmin : full;
         if (step) {
-            if (type === "enum") return this.params.enum.length;
+            if (type === "enum") return this.props.enum.length;
             if (type === "int") return Math.min(Math.floor((mmax - mmin) / Math.round(step)), maxSteps);
             return Math.min(Math.floor((mmax - mmin) / step), maxSteps);
         }
@@ -66,13 +66,13 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
         return maxSteps;
     }
     get distance() {
-        const { type, mmax, mmin, value } = this.params;
-        return type === "enum" ? value / this.params.enum.length : (value - mmin) / (mmax - mmin);
+        const { type, mmax, mmin, value } = this.props;
+        return type === "enum" ? value / this.props.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
-        const { type, mmax, mmin, step } = this.params;
+        const { type, mmax, mmin, step } = this.props;
         const full = 100;
-        if (step) return type === "enum" ? full / this.params.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
+        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }
@@ -100,7 +100,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
             tribordercolor,
             tricolor,
             shortname
-        } = this.params;
+        } = this.props;
         const ctx = this.ctx;
         const distance = this.distance;
 
@@ -263,10 +263,10 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
         }
     }
     getValueFromDelta(e: PointerDragEvent) {
-        const { type, mmin, mmax } = this.params;
+        const { type, mmin, mmax } = this.props;
         const stepRange = this.stepRange;
         const trueSteps = this.trueSteps;
-        const step = type === "enum" ? 1 : (this.params.step || (mmax - mmin) / trueSteps);
+        const step = type === "enum" ? 1 : (this.props.step || (mmax - mmin) / trueSteps);
         const prevSteps = type === "enum" ? e.prevValue : e.prevValue / step;
         const dSteps = Math.round((e.fromY - e.y) / stepRange);
         const steps = Math.min(trueSteps, Math.max(0, prevSteps + dSteps));
@@ -286,7 +286,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
     handlePointerDrag = (e: PointerDragEvent) => {
         if (!this._inTouch) return;
         const newValue = this.getValueFromDelta(e);
-        if (newValue !== this.params.value) this.setParamValue("value", newValue);
+        if (newValue !== this.props.value) this.setValue(newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

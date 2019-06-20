@@ -21,7 +21,7 @@ declare interface PointerUpEvent {
     originalEvent: MouseEvent | TouchEvent;
 }
 
-declare interface LiveParams {
+declare interface LiveProps {
     value: number;
     active: boolean;
     focus: boolean;

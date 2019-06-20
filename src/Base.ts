@@ -16,8 +16,8 @@ export class LiveBaseComponent extends HTMLElement {
     }
 }
 
-export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
-    static params: LiveParams = {
+export class LiveComponent<T extends LiveProps> extends LiveBaseComponent {
+    static props: LiveProps = {
         value: 0,
         active: true,
         focus: false,
@@ -46,16 +46,48 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         mappable: true
     }
     static get observedAttributes() {
-        return Object.keys(this.params);
+        return Object.keys(this.props);
     }
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
     isConnectedPolyfill: boolean;
-    params: T;
+    props: T;
 
     handleKeyDown = (e: KeyboardEvent) => {};
     handleKeyUp = (e: KeyboardEvent) => {};
-    handleTouchStart = (e: TouchEvent) => {};
+    handleTouchStart = (e: TouchEvent) => {
+        e.preventDefault();
+        this.canvas.focus();
+        const rect = this.canvas.getBoundingClientRect();
+        let prevX = e.touches[0].pageX;
+        let prevY = e.touches[0].pageY;
+        const fromX = prevX - rect.left;
+        const fromY = prevY - rect.top;
+        const prevValue = this.props.value;
+        this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
+        const handleTouchMove = (e: TouchEvent) => {
+            e.preventDefault();
+            const pageX = e.changedTouches[0].pageX;
+            const pageY = e.changedTouches[0].pageY;
+            const movementX = pageX - prevX;
+            const movementY = pageY - prevY;
+            prevX = pageX;
+            prevY = pageY;
+            const x = pageX - rect.left;
+            const y = pageY - rect.top;
+            this.handlePointerDrag({ prevValue, x, y, fromX, fromY, movementX, movementY, originalEvent: e });
+        };
+        const handleTouchEnd = (e: TouchEvent) => {
+            e.preventDefault();
+            const x = e.changedTouches[0].pageX - rect.left;
+            const y = e.changedTouches[0].pageY - rect.top;
+            this.handlePointerUp({ x, y, originalEvent: e });
+            document.removeEventListener("touchmove", handleTouchMove);
+            document.removeEventListener("touchend", handleTouchEnd);
+        };
+        document.addEventListener("touchmove", handleTouchMove, { passive: false });
+        document.addEventListener("touchend", handleTouchEnd, { passive: false });
+    };
     handleWheel = (e: WheelEvent) => {};
     handleClick = (e: MouseEvent) => {};
     handleMouseDown = (e: MouseEvent) => {
@@ -64,7 +96,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         const rect = this.canvas.getBoundingClientRect();
         const fromX = e.pageX - rect.left;
         const fromY = e.pageY - rect.top;
-        const prevValue = this.params.value;
+        const prevValue = this.props.value;
         this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleMouseMove = (e: MouseEvent) => {
             e.preventDefault();
@@ -90,11 +122,11 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
     handlePointerDrag = (e: PointerDragEvent) => {};
     handlePointerUp = (e: PointerUpEvent) => {};
     handleFocusIn = (e: FocusEvent) => {
-        this.params.focus = true;
+        this.props.focus = true;
         this.paint();
     }
     handleFocusOut = (e: FocusEvent) => {
-        this.params.focus = false;
+        this.props.focus = false;
         this.paint();
     }
 
@@ -112,11 +144,11 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         this.addEventListener("focusout", this.handleFocusOut);
         this.canvas = this.root.children[0] as HTMLCanvasElement;
         this.ctx = this.canvas.getContext("2d");
-        this.params = (this.constructor as typeof LiveComponent).params as T;
+        this.props = (this.constructor as typeof LiveComponent).props as T;
     }
     get displayValue() {
-        const { value, type, unitstyle, units } = this.params;
-        if (type === "enum") return this.params.enum[value];
+        const { value, type, unitstyle, units } = this.props;
+        if (type === "enum") return this.props.enum[value];
         if (unitstyle === "int") return value.toFixed(0);
         if (unitstyle === "float") return value.toFixed(2);
         if (unitstyle === "time") return value.toFixed(type === "int" ? 0 : 2) + " ms";
@@ -134,7 +166,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         for (let i = 0; i < this.root.host.attributes.length; i++) {
             const attr = this.root.host.attributes[i];
             const { name, value } = attr;
-            (this.params as any)[name] = value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value;
+            (this.props as any)[name] = value.match(/^[+-]?(\d*\.)?\d+$/) ? +value : value;
         }
     }
     attributeChangedCallback(key: string, oldValue: string, value: string) {
@@ -148,8 +180,8 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         this.isConnectedPolyfill = true;
     }
     setParamValue(key: string, value: any) {
-        if (!(key in this.params)) return;
-        (this.params as any)[key] = value;
+        if (!(key in this.props)) return;
+        (this.props as any)[key] = value;
         if (key === "value") this.change();
         this.paint();
     }
@@ -157,7 +189,7 @@ export class LiveComponent<T extends LiveParams> extends LiveBaseComponent {
         this.setParamValue("value", value);
     }
     change() {
-        this.dispatchEvent(new LiveComponentChangeEvent("change", { detail: { value: this.params.value, displayValue: this.displayValue } }));
+        this.dispatchEvent(new LiveComponentChangeEvent("change", { detail: { value: this.props.value, displayValue: this.displayValue } }));
     }
     paint() {}
     render() {

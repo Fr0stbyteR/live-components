@@ -1,7 +1,7 @@
 import { LiveComponent } from "./Base";
 import { atodb } from "./utils";
 
-interface LiveMeterParams extends LiveParams {
+interface LiveMeterProps extends LiveProps {
     orientation: "vertical" | "horizontal";
     mode: "decibel" | "linear";
     clip_size: "normal" | "extended";
@@ -15,10 +15,10 @@ interface LiveMeterParams extends LiveParams {
     overloadcolor: string;
 }
 
-export default class LiveMeter extends LiveComponent<LiveMeterParams> {
-    static get params(): LiveMeterParams {
+export default class LiveMeter extends LiveComponent<LiveMeterProps> {
+    static get props(): LiveMeterProps {
         return {
-            ...super.params,
+            ...super.props,
             shortname: "live.meter~",
             width: 120,
             height: 15,
@@ -40,14 +40,14 @@ export default class LiveMeter extends LiveComponent<LiveMeterParams> {
     paintTimer: number;
     maxTimer: number;
     get distance() {
-        const { mode, value } = this.params;
+        const { mode, value } = this.props;
         return (mode === "decibel" ? Math.max(-70, value) : atodb(Math.abs(value))) / 70 + 1;
     }
 
     paint(paintIn?: boolean) {
         this.paintValue = Math.max(this.paintValue, this.distance);
         if (!paintIn) {
-            if (!this.paintTimer) this.paintTimer = setTimeout(() => this.paint(true), this.params.interval);
+            if (!this.paintTimer) this.paintTimer = setTimeout(() => this.paint(true), this.props.interval);
             return;
         }
         this.paintTimer = undefined;
@@ -64,7 +64,7 @@ export default class LiveMeter extends LiveComponent<LiveMeterParams> {
             warmcolor,
             hotcolor,
             overloadcolor
-        } = this.params;
+        } = this.props;
         const ctx = this.ctx;
 
         const clip = clip_size === "normal" ? 10 : 20;

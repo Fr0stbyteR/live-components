@@ -1,7 +1,7 @@
 import { LiveComponent } from "./Base";
 import { fillRoundedRect } from "./utils";
 
-interface LiveTextParams extends LiveParams {
+interface LiveTextProps extends LiveProps {
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
@@ -20,10 +20,10 @@ interface LiveTextParams extends LiveParams {
     mode: "button" | "toggle";
 }
 
-export default class LiveText extends LiveComponent<LiveTextParams> {
-    static get params(): LiveTextParams {
+export default class LiveText extends LiveComponent<LiveTextProps> {
+    static get props(): LiveTextProps {
         return {
-            ...super.params,
+            ...super.props,
             shortname: "live.text",
             width: 90,
             height: 45,
@@ -70,7 +70,7 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
             value,
             width,
             height
-        } = this.params;
+        } = this.props;
         const ctx = this.ctx;
 
         const borderWidth = 0.5;
@@ -103,13 +103,13 @@ export default class LiveText extends LiveComponent<LiveTextParams> {
         ctx.fillText(value && mode === "toggle" ? texton : text, width * 0.5, height * 0.5);
     }
     handlePointerDown = () => {
-        const { value, mode } = this.params;
+        const { value, mode } = this.props;
         this._inTouch = true;
-        this.setParamValue("value", mode === "button" ? 1 : 1 - value);
+        this.setValue(mode === "button" ? 1 : 1 - value);
     }
     handlePointerUp = () => {
         this._inTouch = false;
-        if (this.params.mode === "button") this.setParamValue("value", 0);
+        if (this.props.mode === "button") this.setValue(0);
     }
     resetPointers() {
         this._inTouch = false;
