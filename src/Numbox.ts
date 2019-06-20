@@ -1,19 +1,19 @@
 import { LiveComponent } from "./Base";
 
 interface LiveNumboxProps extends LiveProps {
-    fontname: string;
-    fontsize: number;
-    fontface: "regular" | "bold" | "italic" | "bold italic";
-    appearance: "slider" | "triangle" | "default";
-    activebgcolor: string;
-    bordercolor: string;
-    focusbordercolor: string;
-    textcolor: string;
-    tricolor: string;
-    activetricolor: string;
-    tricolor2: string;
-    activetricolor2: string;
-    activeslidercolor: string;
+    fontname?: string;
+    fontsize?: number;
+    fontface?: "regular" | "bold" | "italic" | "bold italic";
+    appearance?: "slider" | "triangle" | "default";
+    activebgcolor?: string;
+    bordercolor?: string;
+    focusbordercolor?: string;
+    textcolor?: string;
+    tricolor?: string;
+    activetricolor?: string;
+    tricolor2?: string;
+    activetricolor2?: string;
+    activeslidercolor?: string;
 }
 
 export default class LiveNumbox extends LiveComponent<LiveNumboxProps> {
@@ -42,8 +42,12 @@ export default class LiveNumbox extends LiveComponent<LiveNumboxProps> {
             unitstyle: "int"
         };
     }
+    className = "live-numbox";
     _inTouch: boolean = false;
 
+    constructor() {
+        super(LiveNumbox.props);
+    }
     get trueSteps() {
         const { type, mmax, mmin, steps, step } = this.props;
         const full = 100;

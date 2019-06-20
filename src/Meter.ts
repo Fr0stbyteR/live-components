@@ -2,17 +2,17 @@ import { LiveComponent } from "./Base";
 import { atodb } from "./utils";
 
 interface LiveMeterProps extends LiveProps {
-    orientation: "vertical" | "horizontal";
-    mode: "decibel" | "linear";
-    clip_size: "normal" | "extended";
-    interval: number;
-    bgcolor: string;
-    inactivecoldcolor: string;
-    inactivewarmcolor: string;
-    coldcolor: string;
-    warmcolor: string;
-    hotcolor: string;
-    overloadcolor: string;
+    orientation?: "vertical" | "horizontal";
+    mode?: "decibel" | "linear";
+    clip_size?: "normal" | "extended";
+    interval?: number;
+    bgcolor?: string;
+    inactivecoldcolor?: string;
+    inactivewarmcolor?: string;
+    coldcolor?: string;
+    warmcolor?: string;
+    hotcolor?: string;
+    overloadcolor?: string;
 }
 
 export default class LiveMeter extends LiveComponent<LiveMeterProps> {
@@ -35,10 +35,15 @@ export default class LiveMeter extends LiveComponent<LiveMeterProps> {
             overloadcolor: "rgba(255, 10, 10, 1)"
         };
     }
+    className = "live-meter";
     paintValue: number = 0;
     maxValue: number = 0;
     paintTimer: number;
     maxTimer: number;
+
+    constructor() {
+        super(LiveMeter.props);
+    }
     get distance() {
         const { mode, value } = this.props;
         return (mode === "decibel" ? Math.max(-70, value) : atodb(Math.abs(value))) / 70 + 1;

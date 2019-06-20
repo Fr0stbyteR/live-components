@@ -2,22 +2,22 @@ import { LiveComponent } from "./Base";
 import { fillRoundedRect } from "./utils";
 
 interface LiveTextProps extends LiveProps {
-    fontname: string;
-    fontsize: number;
-    fontface: "regular" | "bold" | "italic" | "bold italic";
-    activebgcolor: string;
-    activebgoncolor: string;
-    bgcolor: string;
-    bgoncolor: string;
-    bordercolor: string;
-    focusbordercolor: string;
-    textcolor: string;
-    textoncolor: string;
-    activetextcolor: string;
-    activetextoncolor: string;
-    text: string;
-    texton: string;
-    mode: "button" | "toggle";
+    fontname?: string;
+    fontsize?: number;
+    fontface?: "regular" | "bold" | "italic" | "bold italic";
+    activebgcolor?: string;
+    activebgoncolor?: string;
+    bgcolor?: string;
+    bgoncolor?: string;
+    bordercolor?: string;
+    focusbordercolor?: string;
+    textcolor?: string;
+    textoncolor?: string;
+    activetextcolor?: string;
+    activetextoncolor?: string;
+    text?: string;
+    texton?: string;
+    mode?: "button" | "toggle";
 }
 
 export default class LiveText extends LiveComponent<LiveTextProps> {
@@ -45,8 +45,12 @@ export default class LiveText extends LiveComponent<LiveTextProps> {
             mode: "toggle"
         };
     }
+    className = "live-text";
     _inTouch: boolean = false;
 
+    constructor() {
+        super(LiveText.props);
+    }
     paint() {
         const {
             active,

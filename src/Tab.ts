@@ -1,23 +1,23 @@
 import { LiveComponent } from "./Base";
 
 interface LiveTabProps extends LiveProps {
-    fontname: string;
-    fontsize: number;
-    fontface: "regular" | "bold" | "italic" | "bold italic";
-    activebgcolor: string;
-    activebgoncolor: string;
-    bgcolor: string;
-    bgoncolor: string;
-    bordercolor: string;
-    focusbordercolor: string;
-    textcolor: string;
-    textoncolor: string;
-    activetextcolor: string;
-    activetextoncolor: string;
-    mode: "equal" | "proportional";
-    spacing_x: number;
-    spacing_y: number;
-    multiline: boolean;
+    fontname?: string;
+    fontsize?: number;
+    fontface?: "regular" | "bold" | "italic" | "bold italic";
+    activebgcolor?: string;
+    activebgoncolor?: string;
+    bgcolor?: string;
+    bgoncolor?: string;
+    bordercolor?: string;
+    focusbordercolor?: string;
+    textcolor?: string;
+    textoncolor?: string;
+    activetextcolor?: string;
+    activetextoncolor?: string;
+    mode?: "equal" | "proportional";
+    spacing_x?: number;
+    spacing_y?: number;
+    multiline?: boolean;
 }
 
 export default class LiveTab extends LiveComponent<LiveTabProps> {
@@ -47,9 +47,13 @@ export default class LiveTab extends LiveComponent<LiveTabProps> {
             multiline: true
         };
     }
+    className = "live-tab";
     _inTouch: boolean = false;
     tabRects: [number, number, number, number][] = [];
 
+    constructor() {
+        super(LiveTab.props);
+    }
     getTabRects() {
         const {
             width,

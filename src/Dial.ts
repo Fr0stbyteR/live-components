@@ -2,23 +2,23 @@ import { LiveComponent } from "./Base";
 import { toRad, roundedRect, fillRoundedRect } from "./utils";
 
 interface LiveDialProps extends LiveProps {
-    fontname: string;
-    fontsize: number;
-    fontface: "regular" | "bold" | "italic" | "bold italic";
-    showname: boolean;
-    shownumber: boolean;
-    appearance: "vertical" | "tiny" | "panel";
-    triangle: boolean;
-    bordercolor: string;
-    focusbordercolor: string;
-    activedialcolor: string;
-    dialcolor: string;
-    activeneedlecolor: string;
-    needlecolor: string;
-    panelcolor: string;
-    textcolor: string;
-    tribordercolor: string;
-    tricolor: string;
+    fontname?: string;
+    fontsize?: number;
+    fontface?: "regular" | "bold" | "italic" | "bold italic";
+    showname?: boolean;
+    shownumber?: boolean;
+    appearance?: "vertical" | "tiny" | "panel";
+    triangle?: boolean;
+    bordercolor?: string;
+    focusbordercolor?: string;
+    activedialcolor?: string;
+    dialcolor?: string;
+    activeneedlecolor?: string;
+    needlecolor?: string;
+    panelcolor?: string;
+    textcolor?: string;
+    tribordercolor?: string;
+    tricolor?: string;
 }
 
 export default class LiveDial extends LiveComponent<LiveDialProps> {
@@ -50,9 +50,13 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
             type: "int"
         };
     }
+    className = "live-dial";
     _inTouch: boolean = false;
     interactionRect: number[] = [0, 0, 0, 0];
 
+    constructor() {
+        super(LiveDial.props);
+    }
     get trueSteps() {
         const { type, mmax, mmin, steps, step } = this.props;
         const full = 100;

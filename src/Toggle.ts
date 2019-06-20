@@ -1,12 +1,12 @@
 import { LiveComponent } from "./Base";
 
 interface LiveToggleProps extends LiveProps {
-    activebgcolor: string;
-    activebgoncolor: string;
-    bgcolor: string;
-    bgoncolor: string;
-    bordercolor: string;
-    focusbordercolor: string;
+    activebgcolor?: string;
+    activebgoncolor?: string;
+    bgcolor?: string;
+    bgoncolor?: string;
+    bordercolor?: string;
+    focusbordercolor?: string;
 }
 
 export default class LiveToggle extends LiveComponent<LiveToggleProps> {
@@ -24,7 +24,11 @@ export default class LiveToggle extends LiveComponent<LiveToggleProps> {
             focusbordercolor: "rgba(80, 80, 80, 1)"
         };
     }
+    className = "live-toggle";
 
+    constructor() {
+        super(LiveToggle.props);
+    }
     paint() {
         const {
             active,

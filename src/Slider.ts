@@ -1,18 +1,18 @@
 import { LiveComponent } from "./Base";
 
 interface LiveSliderProps extends LiveProps {
-    relative: boolean;
-    fontname: string;
-    fontsize: number;
-    fontface: "regular" | "bold" | "italic" | "bold italic";
-    orientation: "vertical" | "horizontal";
-    showname: boolean;
-    shownumber: boolean;
-    slidercolor: string;
-    textcolor: string;
-    tribordercolor: string;
-    trioncolor: string;
-    tricolor: string;
+    relative?: boolean;
+    fontname?: string;
+    fontsize?: number;
+    fontface?: "regular" | "bold" | "italic" | "bold italic";
+    orientation?: "vertical" | "horizontal";
+    showname?: boolean;
+    shownumber?: boolean;
+    slidercolor?: string;
+    textcolor?: string;
+    tribordercolor?: string;
+    trioncolor?: string;
+    tricolor?: string;
 }
 
 export default class LiveSlider extends LiveComponent<LiveSliderProps> {
@@ -39,9 +39,13 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
             type: "int"
         };
     }
+    className = "live-slider";
     _inTouch: boolean = false;
     interactionRect: number[] = [0, 0, 0, 0];
 
+    constructor() {
+        super(LiveSlider.props);
+    }
     get trueSteps() {
         const { orientation, type, mmax, mmin, steps, step } = this.props;
         const full = this.interactionRect[orientation === "vertical" ? 3 : 2];

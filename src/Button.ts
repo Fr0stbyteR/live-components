@@ -1,12 +1,12 @@
 import { LiveComponent } from "./Base";
 
 interface LiveButtonProps extends LiveProps {
-    activebgcolor: string;
-    activebgoncolor: string;
-    bgcolor: string;
-    bgoncolor: string;
-    bordercolor: string;
-    focusbordercolor: string;
+    activebgcolor?: string;
+    activebgoncolor?: string;
+    bgcolor?: string;
+    bgoncolor?: string;
+    bordercolor?: string;
+    focusbordercolor?: string;
 }
 
 export default class LiveButton extends LiveComponent<LiveButtonProps> {
@@ -24,8 +24,12 @@ export default class LiveButton extends LiveComponent<LiveButtonProps> {
             focusbordercolor: "rgba(80, 80, 80, 1)"
         };
     }
+    className = "live-button";
     _inTouch: boolean = false;
 
+    constructor() {
+        super(LiveButton.props);
+    }
     paint() {
         const {
             active,

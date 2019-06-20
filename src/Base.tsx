@@ -1,25 +1,51 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import * as React from "react";
-import { LiveComponent } from "./Base";
-import { getDisplayValue } from "./utils";
+import "./Base.scss";
+import { toMIDI } from "./utils";
 
-export class LiveReactComponent<T extends LiveProps, C extends typeof LiveComponent> extends React.Component {
-    static props: LiveProps = LiveComponent.props;
-    WebComponent: C;
-    props: T = this.WebComponent.props as any;
+export class LiveComponent<T extends LiveProps> extends React.Component {
+    static props: LiveProps = {
+        value: 0,
+        active: true,
+        focus: false,
+        width: 15,
+        height: 15,
+        shortname: "",
+        longname: "",
+        order: 0,
+        linknames: false,
+        type: "float",
+        mmin: 0,
+        mmax: 1,
+        enum: [],
+        enum_icons: [],
+        modmode: "none",
+        initial_enable: false,
+        initial: [0],
+        unitstyle: "float",
+        units: "",
+        exponent: 1,
+        step: 0,
+        steps: 0,
+        speedlim: 5,
+        defer: false,
+        invisible: "automated",
+        mappable: true
+    }
+    props: T;
     className: string;
     refCanvas = React.createRef<HTMLCanvasElement>();
-    get isConnectedPolyfill() {
-        return !!this.refCanvas.current;
-    }
     get canvas() {
         return this.refCanvas.current;
     }
     get ctx() {
         return this.refCanvas.current.getContext("2d");
     }
-    get displayValue() {
-        const { value, type, unitstyle, units } = this.props;
-        return getDisplayValue(value, type, unitstyle, units, this.props.enum);
+    get isConnectedPolyfill() {
+        return !!this.refCanvas.current;
+    }
+    constructor(props: T) {
+        super(props);
     }
     handleKeyDown = (e: React.KeyboardEvent) => {};
     handleKeyUp = (e: React.KeyboardEvent) => {};
@@ -35,8 +61,8 @@ export class LiveReactComponent<T extends LiveProps, C extends typeof LiveCompon
         this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleTouchMove = (e: TouchEvent) => {
             e.preventDefault();
-            const pageX = e.touches[0].pageX;
-            const pageY = e.touches[0].pageY;
+            const pageX = e.changedTouches[0].pageX;
+            const pageY = e.changedTouches[0].pageY;
             const movementX = pageX - prevX;
             const movementY = pageY - prevY;
             prevX = pageX;
@@ -47,14 +73,14 @@ export class LiveReactComponent<T extends LiveProps, C extends typeof LiveCompon
         };
         const handleTouchEnd = (e: TouchEvent) => {
             e.preventDefault();
-            const x = e.touches[0].pageX - rect.left;
-            const y = e.touches[0].pageY - rect.top;
+            const x = e.changedTouches[0].pageX - rect.left;
+            const y = e.changedTouches[0].pageY - rect.top;
             this.handlePointerUp({ x, y, originalEvent: e });
             document.removeEventListener("touchmove", handleTouchMove);
             document.removeEventListener("touchend", handleTouchEnd);
         };
-        document.addEventListener("touchmove", handleTouchMove);
-        document.addEventListener("touchend", handleTouchEnd);
+        document.addEventListener("touchmove", handleTouchMove, { passive: false });
+        document.addEventListener("touchend", handleTouchEnd, { passive: false });
     };
     handleWheel = (e: React.WheelEvent) => {};
     handleClick = (e: React.MouseEvent) => {};
@@ -97,17 +123,36 @@ export class LiveReactComponent<T extends LiveProps, C extends typeof LiveCompon
         this.props.focus = false;
         this.paint();
     }
+
+    get displayValue() {
+        const { value, type, unitstyle, units } = this.props;
+        if (type === "enum") return this.props.enum[value];
+        if (unitstyle === "int") return value.toFixed(0);
+        if (unitstyle === "float") return value.toFixed(2);
+        if (unitstyle === "time") return value.toFixed(type === "int" ? 0 : 2) + " ms";
+        if (unitstyle === "hertz") return value.toFixed(type === "int" ? 0 : 2) + " Hz";
+        if (unitstyle === "decibel") return value.toFixed(type === "int" ? 0 : 2) + " dB";
+        if (unitstyle === "%") return value.toFixed(type === "int" ? 0 : 2) + " %";
+        if (unitstyle === "pan") return value === 0 ? "C" : (type === "int" ? Math.abs(value) : Math.abs(value).toFixed(2)) + (value < 0 ? " L" : " R");
+        if (unitstyle === "semitones") return value.toFixed(type === "int" ? 0 : 2) + " st";
+        if (unitstyle === "midi") return toMIDI(value);
+        if (unitstyle === "custom") return value.toFixed(type === "int" ? 0 : 2) + " " + units;
+        if (unitstyle === "native") return value.toFixed(type === "int" ? 0 : 2);
+        return "N/A";
+    }
+    setValue(value: number) {
+        this.props.value = value;
+    }
+    change() {
+        if (this.props.onChange) this.props.onChange({ value: this.props.value, displayValue: this.displayValue });
+    }
     componentDidMount() {
         this.paint();
     }
     componentDidUpdate() {
         this.paint();
     }
-    change() {
-        if (this.props.onChange) this.props.onChange({ value: this.props.value, displayValue: this.displayValue });
-    }
     paint() {}
-
     render() {
         return (
             <canvas
