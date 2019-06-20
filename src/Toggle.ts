@@ -26,9 +26,6 @@ export default class LiveToggle extends LiveComponent<LiveToggleProps> {
     }
     className = "live-toggle";
 
-    constructor() {
-        super(LiveToggle.props);
-    }
     paint() {
         const {
             active,
@@ -42,7 +39,7 @@ export default class LiveToggle extends LiveComponent<LiveToggleProps> {
             value,
             width,
             height
-        } = this.props;
+        } = this.state;
         const ctx = this.ctx;
 
         const borderWidth = 0.5;
@@ -64,7 +61,7 @@ export default class LiveToggle extends LiveComponent<LiveToggleProps> {
         ctx.stroke();
     }
     handlePointerDown = () => {
-        const { value } = this.props;
+        const { value } = this.state;
         this.setValue(1 - value);
     }
 }

@@ -33,6 +33,7 @@ export class LiveComponent<T extends LiveProps> extends React.Component {
         mappable: true
     }
     props: T;
+    state: T = (this.constructor as typeof LiveComponent).props as any;
     className: string;
     refCanvas = React.createRef<HTMLCanvasElement>();
     get canvas() {
@@ -44,20 +45,16 @@ export class LiveComponent<T extends LiveProps> extends React.Component {
     get isConnectedPolyfill() {
         return !!this.refCanvas.current;
     }
-    constructor(props: T) {
-        super(props);
-    }
     handleKeyDown = (e: React.KeyboardEvent) => {};
     handleKeyUp = (e: React.KeyboardEvent) => {};
     handleTouchStart = (e: React.TouchEvent) => {
-        e.preventDefault();
         this.canvas.focus();
         const rect = this.canvas.getBoundingClientRect();
         let prevX = e.touches[0].pageX;
         let prevY = e.touches[0].pageY;
         const fromX = prevX - rect.left;
         const fromY = prevY - rect.top;
-        const prevValue = this.props.value;
+        const prevValue = this.state.value;
         this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleTouchMove = (e: TouchEvent) => {
             e.preventDefault();
@@ -90,7 +87,7 @@ export class LiveComponent<T extends LiveProps> extends React.Component {
         const rect = this.canvas.getBoundingClientRect();
         const fromX = e.pageX - rect.left;
         const fromY = e.pageY - rect.top;
-        const prevValue = this.props.value;
+        const prevValue = this.state.value;
         this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleMouseMove = (e: MouseEvent) => {
             e.preventDefault();
@@ -115,18 +112,12 @@ export class LiveComponent<T extends LiveProps> extends React.Component {
     handlePointerDown = (e: PointerDownEvent) => {};
     handlePointerDrag = (e: PointerDragEvent) => {};
     handlePointerUp = (e: PointerUpEvent) => {};
-    handleFocusIn = (e: React.FocusEvent) => {
-        this.props.focus = true;
-        this.paint();
-    }
-    handleFocusOut = (e: React.FocusEvent) => {
-        this.props.focus = false;
-        this.paint();
-    }
+    handleFocusIn = (e: React.FocusEvent) => this.setState({ focus: true });
+    handleFocusOut = (e: React.FocusEvent) => this.setState({ focus: false });
 
     get displayValue() {
-        const { value, type, unitstyle, units } = this.props;
-        if (type === "enum") return this.props.enum[value];
+        const { value, type, unitstyle, units } = this.state;
+        if (type === "enum") return this.state.enum[value];
         if (unitstyle === "int") return value.toFixed(0);
         if (unitstyle === "float") return value.toFixed(2);
         if (unitstyle === "time") return value.toFixed(type === "int" ? 0 : 2) + " ms";
@@ -141,12 +132,13 @@ export class LiveComponent<T extends LiveProps> extends React.Component {
         return "N/A";
     }
     setValue(value: number) {
-        this.props.value = value;
+        this.setState({ value });
     }
     change() {
-        if (this.props.onChange) this.props.onChange({ value: this.props.value, displayValue: this.displayValue });
+        if (this.state.onChange) this.state.onChange({ value: this.state.value, displayValue: this.displayValue });
     }
     componentDidMount() {
+        this.setState(this.props);
         this.paint();
     }
     componentDidUpdate() {

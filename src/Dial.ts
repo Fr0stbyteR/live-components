@@ -54,15 +54,12 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
     _inTouch: boolean = false;
     interactionRect: number[] = [0, 0, 0, 0];
 
-    constructor() {
-        super(LiveDial.props);
-    }
     get trueSteps() {
-        const { type, mmax, mmin, steps, step } = this.props;
+        const { type, mmax, mmin, steps, step } = this.state;
         const full = 100;
-        const maxSteps = type === "enum" ? this.props.enum.length : type === "int" ? mmax - mmin : full;
+        const maxSteps = type === "enum" ? this.state.enum.length : type === "int" ? mmax - mmin : full;
         if (step) {
-            if (type === "enum") return this.props.enum.length;
+            if (type === "enum") return this.state.enum.length;
             if (type === "int") return Math.min(Math.floor((mmax - mmin) / Math.round(step)), maxSteps);
             return Math.min(Math.floor((mmax - mmin) / step), maxSteps);
         }
@@ -70,13 +67,13 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
         return maxSteps;
     }
     get distance() {
-        const { type, mmax, mmin, value } = this.props;
-        return type === "enum" ? value / this.props.enum.length : (value - mmin) / (mmax - mmin);
+        const { type, mmax, mmin, value } = this.state;
+        return type === "enum" ? value / this.state.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
-        const { type, mmax, mmin, step } = this.props;
+        const { type, mmax, mmin, step } = this.state;
         const full = 100;
-        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
+        if (step) return type === "enum" ? full / this.state.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }
@@ -104,7 +101,7 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
             tribordercolor,
             tricolor,
             shortname
-        } = this.props;
+        } = this.state;
         const ctx = this.ctx;
         const distance = this.distance;
 
@@ -267,10 +264,10 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
         }
     }
     getValueFromDelta(e: PointerDragEvent) {
-        const { type, mmin, mmax } = this.props;
+        const { type, mmin, mmax } = this.state;
         const stepRange = this.stepRange;
         const trueSteps = this.trueSteps;
-        const step = type === "enum" ? 1 : (this.props.step || (mmax - mmin) / trueSteps);
+        const step = type === "enum" ? 1 : (this.state.step || (mmax - mmin) / trueSteps);
         const prevSteps = type === "enum" ? e.prevValue : e.prevValue / step;
         const dSteps = Math.round((e.fromY - e.y) / stepRange);
         const steps = Math.min(trueSteps, Math.max(0, prevSteps + dSteps));
@@ -290,7 +287,7 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
     handlePointerDrag = (e: PointerDragEvent) => {
         if (!this._inTouch) return;
         const newValue = this.getValueFromDelta(e);
-        if (newValue !== this.props.value) this.setValue(newValue);
+        if (newValue !== this.state.value) this.setValue(newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

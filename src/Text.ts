@@ -48,9 +48,6 @@ export default class LiveText extends LiveComponent<LiveTextProps> {
     className = "live-text";
     _inTouch: boolean = false;
 
-    constructor() {
-        super(LiveText.props);
-    }
     paint() {
         const {
             active,
@@ -74,7 +71,7 @@ export default class LiveText extends LiveComponent<LiveTextProps> {
             value,
             width,
             height
-        } = this.props;
+        } = this.state;
         const ctx = this.ctx;
 
         const borderWidth = 0.5;
@@ -107,13 +104,13 @@ export default class LiveText extends LiveComponent<LiveTextProps> {
         ctx.fillText(value && mode === "toggle" ? texton : text, width * 0.5, height * 0.5);
     }
     handlePointerDown = () => {
-        const { value, mode } = this.props;
+        const { value, mode } = this.state;
         this._inTouch = true;
         this.setValue(mode === "button" ? 1 : 1 - value);
     }
     handlePointerUp = () => {
         this._inTouch = false;
-        if (this.props.mode === "button") this.setValue(0);
+        if (this.state.mode === "button") this.setValue(0);
     }
     resetPointers() {
         this._inTouch = false;

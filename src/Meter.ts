@@ -41,18 +41,15 @@ export default class LiveMeter extends LiveComponent<LiveMeterProps> {
     paintTimer: number;
     maxTimer: number;
 
-    constructor() {
-        super(LiveMeter.props);
-    }
     get distance() {
-        const { mode, value } = this.props;
+        const { mode, value } = this.state;
         return (mode === "decibel" ? Math.max(-70, value) : atodb(Math.abs(value))) / 70 + 1;
     }
 
     paint(paintIn?: boolean) {
         this.paintValue = Math.max(this.paintValue, this.distance);
         if (!paintIn) {
-            if (!this.paintTimer) this.paintTimer = setTimeout(() => this.paint(true), this.props.interval);
+            if (!this.paintTimer) this.paintTimer = setTimeout(() => this.paint(true), this.state.interval);
             return;
         }
         this.paintTimer = undefined;
@@ -69,7 +66,7 @@ export default class LiveMeter extends LiveComponent<LiveMeterProps> {
             warmcolor,
             hotcolor,
             overloadcolor
-        } = this.props;
+        } = this.state;
         const ctx = this.ctx;
 
         const clip = clip_size === "normal" ? 10 : 20;

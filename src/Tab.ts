@@ -51,9 +51,6 @@ export default class LiveTab extends LiveComponent<LiveTabProps> {
     _inTouch: boolean = false;
     tabRects: [number, number, number, number][] = [];
 
-    constructor() {
-        super(LiveTab.props);
-    }
     getTabRects() {
         const {
             width,
@@ -62,8 +59,8 @@ export default class LiveTab extends LiveComponent<LiveTabProps> {
             mode,
             spacing_x,
             spacing_y
-        } = this.props;
-        const enums = this.props.enum;
+        } = this.state;
+        const enums = this.state.enum;
         const margin = 4;
         const minHeight = 10;
         const count = enums.length;
@@ -146,8 +143,8 @@ export default class LiveTab extends LiveComponent<LiveTabProps> {
             value,
             width,
             height
-        } = this.props;
-        const enums = this.props.enum;
+        } = this.state;
+        const enums = this.state.enum;
         const ctx = this.ctx;
         const tabRects = this.getTabRects();
 

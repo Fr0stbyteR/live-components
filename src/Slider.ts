@@ -43,15 +43,12 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
     _inTouch: boolean = false;
     interactionRect: number[] = [0, 0, 0, 0];
 
-    constructor() {
-        super(LiveSlider.props);
-    }
     get trueSteps() {
-        const { orientation, type, mmax, mmin, steps, step } = this.props;
+        const { orientation, type, mmax, mmin, steps, step } = this.state;
         const full = this.interactionRect[orientation === "vertical" ? 3 : 2];
-        const maxSteps = type === "enum" ? this.props.enum.length : type === "int" ? mmax - mmin : full;
+        const maxSteps = type === "enum" ? this.state.enum.length : type === "int" ? mmax - mmin : full;
         if (step) {
-            if (type === "enum") return this.props.enum.length;
+            if (type === "enum") return this.state.enum.length;
             if (type === "int") return Math.min(Math.floor((mmax - mmin) / Math.round(step)), maxSteps);
             return Math.min(Math.floor((mmax - mmin) / step), maxSteps);
         }
@@ -59,13 +56,13 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
         return maxSteps;
     }
     get distance() {
-        const { type, mmax, mmin, value } = this.props;
-        return type === "enum" ? value / this.props.enum.length : (value - mmin) / (mmax - mmin);
+        const { type, mmax, mmin, value } = this.state;
+        return type === "enum" ? value / this.state.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
-        const { orientation, type, mmax, mmin, step } = this.props;
+        const { orientation, type, mmax, mmin, step } = this.state;
         const full = this.interactionRect[orientation === "vertical" ? 3 : 2];
-        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
+        if (step) return type === "enum" ? full / this.state.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }
@@ -85,7 +82,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
             trioncolor,
             tricolor,
             shortname
-        } = this.props;
+        } = this.state;
         const ctx = this.ctx;
         const lineWidth = 0.5;
         const padding = 8;
@@ -174,10 +171,10 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
         }
     }
     getValueFromPos(e: { x: number; y: number }) {
-        const { orientation, type, mmin, mmax } = this.props;
+        const { orientation, type, mmin, mmax } = this.state;
         const stepRange = this.stepRange;
         const trueSteps = this.trueSteps;
-        const step = this.props.step || (mmax - mmin) / trueSteps;
+        const step = this.state.step || (mmax - mmin) / trueSteps;
         let steps = Math.round((orientation === "vertical" ? this.interactionRect[3] - (e.y - this.interactionRect[1]) : e.x - this.interactionRect[0]) / stepRange);
         steps = Math.min(trueSteps, Math.max(0, steps));
         if (type === "enum") return steps;
@@ -185,7 +182,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
         return steps * step + mmin;
     }
     handlePointerDown = (e: PointerDownEvent) => {
-        const { value } = this.props;
+        const { value } = this.state;
         if (
             e.x < this.interactionRect[0]
             || e.x > this.interactionRect[0] + this.interactionRect[2]
@@ -199,7 +196,7 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
     handlePointerDrag = (e: PointerDragEvent) => {
         if (!this._inTouch) return;
         const newValue = this.getValueFromPos(e);
-        if (newValue !== this.props.value) this.setValue(newValue);
+        if (newValue !== this.state.value) this.setValue(newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

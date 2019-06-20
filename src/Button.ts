@@ -27,9 +27,6 @@ export default class LiveButton extends LiveComponent<LiveButtonProps> {
     className = "live-button";
     _inTouch: boolean = false;
 
-    constructor() {
-        super(LiveButton.props);
-    }
     paint() {
         const {
             active,
@@ -43,7 +40,7 @@ export default class LiveButton extends LiveComponent<LiveButtonProps> {
             value,
             width,
             height
-        } = this.props;
+        } = this.state;
         const ctx = this.ctx;
 
         const borderWidth = 0.5;
