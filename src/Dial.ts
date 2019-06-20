@@ -1,7 +1,7 @@
 import { LiveComponent } from "./Base";
 import { toRad, roundedRect, fillRoundedRect } from "./utils";
 
-interface LiveDialParams extends LiveProps {
+interface LiveDialProps extends LiveProps {
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
@@ -21,8 +21,8 @@ interface LiveDialParams extends LiveProps {
     tricolor: string;
 }
 
-export default class LiveDial extends LiveComponent<LiveDialParams> {
-    static get props(): LiveDialParams {
+export default class LiveDial extends LiveComponent<LiveDialProps> {
+    static get props(): LiveDialProps {
         return {
             ...super.props,
             shortname: "live.dial",
@@ -286,7 +286,7 @@ export default class LiveDial extends LiveComponent<LiveDialParams> {
     handlePointerDrag = (e: PointerDragEvent) => {
         if (!this._inTouch) return;
         const newValue = this.getValueFromDelta(e);
-        if (newValue !== this.props.value) this.setParamValue("value", newValue);
+        if (newValue !== this.props.value) this.setValue(newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

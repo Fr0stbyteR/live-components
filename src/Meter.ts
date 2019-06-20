@@ -1,7 +1,7 @@
 import { LiveComponent } from "./Base";
 import { atodb } from "./utils";
 
-interface LiveMeterParams extends LiveProps {
+interface LiveMeterProps extends LiveProps {
     orientation: "vertical" | "horizontal";
     mode: "decibel" | "linear";
     clip_size: "normal" | "extended";
@@ -15,8 +15,8 @@ interface LiveMeterParams extends LiveProps {
     overloadcolor: string;
 }
 
-export default class LiveMeter extends LiveComponent<LiveMeterParams> {
-    static get props(): LiveMeterParams {
+export default class LiveMeter extends LiveComponent<LiveMeterProps> {
+    static get props(): LiveMeterProps {
         return {
             ...super.props,
             shortname: "live.meter~",

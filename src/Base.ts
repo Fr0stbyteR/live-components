@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import "./Base.scss";
-import { getDisplayValue } from "./utils";
+import { toMIDI } from "./utils";
 import { LiveComponentChangeEvent } from "./ChangeEvent";
 
 export class LiveBaseComponent extends HTMLElement {
@@ -67,8 +67,8 @@ export class LiveComponent<T extends LiveProps> extends LiveBaseComponent {
         this.handlePointerDown({ x: fromX, y: fromY, originalEvent: e });
         const handleTouchMove = (e: TouchEvent) => {
             e.preventDefault();
-            const pageX = e.touches[0].pageX;
-            const pageY = e.touches[0].pageY;
+            const pageX = e.changedTouches[0].pageX;
+            const pageY = e.changedTouches[0].pageY;
             const movementX = pageX - prevX;
             const movementY = pageY - prevY;
             prevX = pageX;
@@ -79,14 +79,14 @@ export class LiveComponent<T extends LiveProps> extends LiveBaseComponent {
         };
         const handleTouchEnd = (e: TouchEvent) => {
             e.preventDefault();
-            const x = e.touches[0].pageX - rect.left;
-            const y = e.touches[0].pageY - rect.top;
+            const x = e.changedTouches[0].pageX - rect.left;
+            const y = e.changedTouches[0].pageY - rect.top;
             this.handlePointerUp({ x, y, originalEvent: e });
             document.removeEventListener("touchmove", handleTouchMove);
             document.removeEventListener("touchend", handleTouchEnd);
         };
-        document.addEventListener("touchmove", handleTouchMove);
-        document.addEventListener("touchend", handleTouchEnd);
+        document.addEventListener("touchmove", handleTouchMove, { passive: false });
+        document.addEventListener("touchend", handleTouchEnd, { passive: false });
     };
     handleWheel = (e: WheelEvent) => {};
     handleClick = (e: MouseEvent) => {};
@@ -148,7 +148,19 @@ export class LiveComponent<T extends LiveProps> extends LiveBaseComponent {
     }
     get displayValue() {
         const { value, type, unitstyle, units } = this.props;
-        return getDisplayValue(value, type, unitstyle, units, this.props.enum);
+        if (type === "enum") return this.props.enum[value];
+        if (unitstyle === "int") return value.toFixed(0);
+        if (unitstyle === "float") return value.toFixed(2);
+        if (unitstyle === "time") return value.toFixed(type === "int" ? 0 : 2) + " ms";
+        if (unitstyle === "hertz") return value.toFixed(type === "int" ? 0 : 2) + " Hz";
+        if (unitstyle === "decibel") return value.toFixed(type === "int" ? 0 : 2) + " dB";
+        if (unitstyle === "%") return value.toFixed(type === "int" ? 0 : 2) + " %";
+        if (unitstyle === "pan") return value === 0 ? "C" : (type === "int" ? Math.abs(value) : Math.abs(value).toFixed(2)) + (value < 0 ? " L" : " R");
+        if (unitstyle === "semitones") return value.toFixed(type === "int" ? 0 : 2) + " st";
+        if (unitstyle === "midi") return toMIDI(value);
+        if (unitstyle === "custom") return value.toFixed(type === "int" ? 0 : 2) + " " + units;
+        if (unitstyle === "native") return value.toFixed(type === "int" ? 0 : 2);
+        return "N/A";
     }
     fetchAttribute() {
         for (let i = 0; i < this.root.host.attributes.length; i++) {

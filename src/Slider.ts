@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveSliderParams extends LiveProps {
+interface LiveSliderProps extends LiveProps {
     relative: boolean;
     fontname: string;
     fontsize: number;
@@ -15,8 +15,8 @@ interface LiveSliderParams extends LiveProps {
     tricolor: string;
 }
 
-export default class LiveSlider extends LiveComponent<LiveSliderParams> {
-    static get props(): LiveSliderParams {
+export default class LiveSlider extends LiveComponent<LiveSliderProps> {
+    static get props(): LiveSliderProps {
         return {
             ...super.props,
             shortname: "live.slider",
@@ -189,13 +189,13 @@ export default class LiveSlider extends LiveComponent<LiveSliderParams> {
             || e.y > this.interactionRect[1] + this.interactionRect[3]
         ) return;
         const newValue = this.getValueFromPos(e);
-        if (newValue !== value) this.setParamValue("value", this.getValueFromPos(e));
+        if (newValue !== value) this.setValue(this.getValueFromPos(e));
         this._inTouch = true;
     }
     handlePointerDrag = (e: PointerDragEvent) => {
         if (!this._inTouch) return;
         const newValue = this.getValueFromPos(e);
-        if (newValue !== this.props.value) this.setParamValue("value", newValue);
+        if (newValue !== this.props.value) this.setValue(newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;

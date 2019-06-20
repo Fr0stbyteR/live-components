@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveButtonParams extends LiveProps {
+interface LiveButtonProps extends LiveProps {
     activebgcolor: string;
     activebgoncolor: string;
     bgcolor: string;
@@ -9,8 +9,8 @@ interface LiveButtonParams extends LiveProps {
     focusbordercolor: string;
 }
 
-export default class LiveButton extends LiveComponent<LiveButtonParams> {
-    static get props(): LiveButtonParams {
+export default class LiveButton extends LiveComponent<LiveButtonProps> {
+    static get props(): LiveButtonProps {
         return {
             ...super.props,
             shortname: "live.button",
@@ -61,16 +61,16 @@ export default class LiveButton extends LiveComponent<LiveButtonParams> {
         ctx.stroke();
 
         if (value && !this._inTouch) {
-            setTimeout(() => this.setParamValue("value", 0), 100);
+            setTimeout(() => this.setValue(0), 100);
         }
     }
     handlePointerDown = () => {
         this._inTouch = true;
-        this.setParamValue("value", 1);
+        this.setValue(1);
     }
     handlePointerUp = () => {
         this._inTouch = false;
-        this.setParamValue("value", 0);
+        this.setValue(0);
     }
     resetPointers() {
         this._inTouch = false;

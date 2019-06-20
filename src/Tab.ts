@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveTabParams extends LiveProps {
+interface LiveTabProps extends LiveProps {
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
@@ -20,8 +20,8 @@ interface LiveTabParams extends LiveProps {
     multiline: boolean;
 }
 
-export default class LiveTab extends LiveComponent<LiveTabParams> {
-    static get props(): LiveTabParams {
+export default class LiveTab extends LiveComponent<LiveTabProps> {
+    static get props(): LiveTabProps {
         return {
             ...super.props,
             shortname: "live.tab",
@@ -177,7 +177,7 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
         for (let i = 0; i < this.tabRects.length; i++) {
             const rect = this.tabRects[i];
             if (e.x >= rect[0] && e.x <= rect[2] + rect[0] && e.y >= rect[1] && e.y <= rect[3] + rect[1]) {
-                this.setParamValue("value", i);
+                this.setValue(i);
                 return;
             }
         }

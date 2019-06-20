@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveNumboxParams extends LiveProps {
+interface LiveNumboxProps extends LiveProps {
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
@@ -16,8 +16,8 @@ interface LiveNumboxParams extends LiveProps {
     activeslidercolor: string;
 }
 
-export default class LiveNumbox extends LiveComponent<LiveNumboxParams> {
-    static get props(): LiveNumboxParams {
+export default class LiveNumbox extends LiveComponent<LiveNumboxProps> {
+    static get props(): LiveNumboxProps {
         return {
             ...super.props,
             shortname: "live.numbox",
@@ -145,7 +145,7 @@ export default class LiveNumbox extends LiveComponent<LiveNumboxParams> {
     handlePointerDrag = (e: PointerDragEvent) => {
         if (!this._inTouch) return;
         const newValue = this.getValueFromDelta(e);
-        if (newValue !== this.props.value) this.setParamValue("value", newValue);
+        if (newValue !== this.props.value) this.setValue(newValue);
     }
     handlePointerUp = () => {
         this._inTouch = false;
