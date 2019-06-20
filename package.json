@@ -8,6 +8,10 @@
     "build": "webpack --mode development",
     "dist": "npm run build && webpack --mode production"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Fr0stbyteR/live-components.git"
+  },
   "keywords": [
     "webcomponents",
     "audio",
