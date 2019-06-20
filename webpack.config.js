@@ -1,7 +1,7 @@
 const path = require('path');
 
 const config = {
-  entry: './src/index.tsx',
+  entry: './src/index.ts',
   resolve: {
     extensions: ['.tsx', '.ts', '.js']
   },
