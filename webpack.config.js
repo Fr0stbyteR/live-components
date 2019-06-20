@@ -3,7 +3,7 @@ const path = require('path');
 const config = {
   entry: './src/index.ts',
   resolve: {
-    extensions: ['.ts', '.js']
+    extensions: ['.tsx', '.ts', '.js']
   },
   output: {
     path: path.resolve(__dirname, 'dist'),

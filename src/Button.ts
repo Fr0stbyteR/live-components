@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveButtonParams extends LiveParams {
+interface LiveButtonParams extends LiveProps {
     activebgcolor: string;
     activebgoncolor: string;
     bgcolor: string;
@@ -10,9 +10,9 @@ interface LiveButtonParams extends LiveParams {
 }
 
 export default class LiveButton extends LiveComponent<LiveButtonParams> {
-    static get params(): LiveButtonParams {
+    static get props(): LiveButtonParams {
         return {
-            ...super.params,
+            ...super.props,
             shortname: "live.button",
             width: 15,
             height: 15,
@@ -39,7 +39,7 @@ export default class LiveButton extends LiveComponent<LiveButtonParams> {
             value,
             width,
             height
-        } = this.params;
+        } = this.props;
         const ctx = this.ctx;
 
         const borderWidth = 0.5;

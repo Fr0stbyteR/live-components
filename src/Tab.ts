@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveTabParams extends LiveParams {
+interface LiveTabParams extends LiveProps {
     fontname: string;
     fontsize: number;
     fontface: "regular" | "bold" | "italic" | "bold italic";
@@ -21,9 +21,9 @@ interface LiveTabParams extends LiveParams {
 }
 
 export default class LiveTab extends LiveComponent<LiveTabParams> {
-    static get params(): LiveTabParams {
+    static get props(): LiveTabParams {
         return {
-            ...super.params,
+            ...super.props,
             shortname: "live.tab",
             width: 90,
             height: 45,
@@ -58,8 +58,8 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
             mode,
             spacing_x,
             spacing_y
-        } = this.params;
-        const enums = this.params.enum;
+        } = this.props;
+        const enums = this.props.enum;
         const margin = 4;
         const minHeight = 10;
         const count = enums.length;
@@ -142,8 +142,8 @@ export default class LiveTab extends LiveComponent<LiveTabParams> {
             value,
             width,
             height
-        } = this.params;
-        const enums = this.params.enum;
+        } = this.props;
+        const enums = this.props.enum;
         const ctx = this.ctx;
         const tabRects = this.getTabRects();
 

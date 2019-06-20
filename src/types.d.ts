@@ -1,7 +1,7 @@
 declare interface PointerDownEvent {
     x: number;
     y: number;
-    originalEvent: MouseEvent | TouchEvent;
+    originalEvent: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent;
 }
 
 declare interface PointerDragEvent {
@@ -12,16 +12,16 @@ declare interface PointerDragEvent {
     fromY: number;
     movementX: number;
     movementY: number;
-    originalEvent: MouseEvent | TouchEvent;
+    originalEvent: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent;
 }
 
 declare interface PointerUpEvent {
     x: number;
     y: number;
-    originalEvent: MouseEvent | TouchEvent;
+    originalEvent: MouseEvent | TouchEvent | React.MouseEvent | React.TouchEvent;
 }
 
-declare interface LiveParams {
+declare interface LiveProps {
     value: number;
     active: boolean;
     focus: boolean;
@@ -48,4 +48,5 @@ declare interface LiveParams {
     defer: boolean;
     invisible: "automated" | "stored" | "hidden";
     mappable: boolean;
+    onChange?: (e: { value: number, displayValue: string }) => any;
 }

@@ -36,3 +36,18 @@ export const fillRoundedRect = (ctx: CanvasRenderingContext2D, x: number, y: num
     ctx.closePath();
     ctx.fill();
 };
+export const getDisplayValue = (value: number, type: string, unitstyle: string, units: string, enums: string[]) => {
+    if (type === "enum") return enums[value];
+    if (unitstyle === "int") return value.toFixed(0);
+    if (unitstyle === "float") return value.toFixed(2);
+    if (unitstyle === "time") return value.toFixed(type === "int" ? 0 : 2) + " ms";
+    if (unitstyle === "hertz") return value.toFixed(type === "int" ? 0 : 2) + " Hz";
+    if (unitstyle === "decibel") return value.toFixed(type === "int" ? 0 : 2) + " dB";
+    if (unitstyle === "%") return value.toFixed(type === "int" ? 0 : 2) + " %";
+    if (unitstyle === "pan") return value === 0 ? "C" : (type === "int" ? Math.abs(value) : Math.abs(value).toFixed(2)) + (value < 0 ? " L" : " R");
+    if (unitstyle === "semitones") return value.toFixed(type === "int" ? 0 : 2) + " st";
+    if (unitstyle === "midi") return toMIDI(value);
+    if (unitstyle === "custom") return value.toFixed(type === "int" ? 0 : 2) + " " + units;
+    if (unitstyle === "native") return value.toFixed(type === "int" ? 0 : 2);
+    return "N/A";
+}

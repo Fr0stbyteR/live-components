@@ -1,6 +1,6 @@
 import { LiveComponent } from "./Base";
 
-interface LiveToggleParams extends LiveParams {
+interface LiveToggleParams extends LiveProps {
     activebgcolor: string;
     activebgoncolor: string;
     bgcolor: string;
@@ -10,9 +10,9 @@ interface LiveToggleParams extends LiveParams {
 }
 
 export default class LiveToggle extends LiveComponent<LiveToggleParams> {
-    static get params(): LiveToggleParams {
+    static get props(): LiveToggleParams {
         return {
-            ...super.params,
+            ...super.props,
             shortname: "live.toggle",
             width: 15,
             height: 15,
@@ -38,7 +38,7 @@ export default class LiveToggle extends LiveComponent<LiveToggleParams> {
             value,
             width,
             height
-        } = this.params;
+        } = this.props;
         const ctx = this.ctx;
 
         const borderWidth = 0.5;
@@ -60,7 +60,7 @@ export default class LiveToggle extends LiveComponent<LiveToggleParams> {
         ctx.stroke();
     }
     handlePointerDown = () => {
-        const { value } = this.params;
+        const { value } = this.props;
         this.setParamValue("value", 1 - value);
     }
 }
