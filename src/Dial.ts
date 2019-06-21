@@ -59,8 +59,8 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
         const full = 100;
         const maxSteps = type === "enum" ? this.state.enum.length : type === "int" ? mmax - mmin : full;
         if (step) {
-            if (type === "enum") return this.state.enum.length;
-            if (type === "int") return Math.min(Math.floor((mmax - mmin) / Math.round(step)), maxSteps);
+            if (type === "enum") return this.props.enum.length;
+            if (type === "int") return Math.min(Math.floor((mmax - mmin) / (Math.round(step) || 1)), maxSteps);
             return Math.min(Math.floor((mmax - mmin) / step), maxSteps);
         }
         if (steps) return Math.min(steps, maxSteps);
@@ -73,7 +73,7 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
     get stepRange() {
         const { type, mmax, mmin, step } = this.state;
         const full = 100;
-        if (step) return type === "enum" ? full / this.state.enum.length : type === "int" ? Math.round(step) / (mmax - mmin) * full : step / (mmax - mmin) * full;
+        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? (Math.round(step) || 1) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }
@@ -267,8 +267,8 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
         const { type, mmin, mmax } = this.state;
         const stepRange = this.stepRange;
         const trueSteps = this.trueSteps;
-        const step = type === "enum" ? 1 : (this.state.step || (mmax - mmin) / trueSteps);
-        const prevSteps = type === "enum" ? e.prevValue : e.prevValue / step;
+        const step = type === "enum" ? 1 : (mmax - mmin) / trueSteps;
+        const prevSteps = type === "enum" ? e.prevValue : (e.prevValue - mmin) / step;
         const dSteps = Math.round((e.fromY - e.y) / stepRange);
         const steps = Math.min(trueSteps, Math.max(0, prevSteps + dSteps));
         if (type === "enum") return steps;
