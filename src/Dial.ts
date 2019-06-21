@@ -70,9 +70,7 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
         return type === "enum" ? value / this.props.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
-        const { type, mmax, mmin, step } = this.props;
         const full = 100;
-        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? (Math.round(step) || 1) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }
