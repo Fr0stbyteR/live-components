@@ -60,9 +60,8 @@ export default class LiveSlider extends LiveComponent<LiveSliderProps> {
         return type === "enum" ? value / this.state.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
-        const { orientation, type, mmax, mmin, step } = this.state;
+        const { orientation } = this.state;
         const full = this.interactionRect[orientation === "vertical" ? 3 : 2];
-        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? (Math.round(step) || 1) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }

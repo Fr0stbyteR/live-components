@@ -62,9 +62,7 @@ export default class LiveNumbox extends LiveComponent<LiveNumboxProps> {
         return type === "enum" ? value / this.state.enum.length : (value - mmin) / (mmax - mmin);
     }
     get stepRange() {
-        const { type, mmax, mmin, step } = this.state;
         const full = 100;
-        if (step) return type === "enum" ? full / this.props.enum.length : type === "int" ? (Math.round(step) || 1) / (mmax - mmin) * full : step / (mmax - mmin) * full;
         const trueSteps = this.trueSteps;
         return full / trueSteps;
     }
