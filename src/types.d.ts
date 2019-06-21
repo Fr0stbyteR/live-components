@@ -48,5 +48,5 @@ declare interface LiveProps {
     defer?: boolean;
     invisible?: "automated" | "stored" | "hidden";
     mappable?: boolean;
-    onChange?: (e: { value: number, displayValue: string }) => any;
+    onChange?: (e: { value: number; displayValue: string }) => any;
 }
