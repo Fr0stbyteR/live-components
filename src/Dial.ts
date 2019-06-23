@@ -27,7 +27,7 @@ export default class LiveDial extends LiveComponent<LiveDialProps> {
             ...super.props,
             shortname: "live.dial",
             width: 45,
-            height: 45,
+            height: 60,
             fontname: "Arial",
             fontsize: 12,
             fontface: "regular",
