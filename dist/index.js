@@ -3393,7 +3393,7 @@ class LiveDial extends _Base__WEBPACK_IMPORTED_MODULE_2__["LiveComponent"] {
     return _babel_runtime_helpers_objectSpread__WEBPACK_IMPORTED_MODULE_0___default()({}, super.props, {
       shortname: "live.dial",
       width: 45,
-      height: 45,
+      height: 60,
       fontname: "Arial",
       fontsize: 12,
       fontface: "regular",
