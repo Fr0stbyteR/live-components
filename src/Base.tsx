@@ -3,7 +3,7 @@ import * as React from "react";
 import "./Base.scss";
 import { toMIDI } from "./utils";
 
-export class LiveComponent<T extends LiveProps> extends React.Component {
+export class LiveComponent<T extends LiveProps> extends React.Component<T, T> {
     static props: LiveProps = {
         value: 0,
         active: true,
@@ -32,7 +32,6 @@ export class LiveComponent<T extends LiveProps> extends React.Component {
         invisible: "automated",
         mappable: true
     }
-    props: T;
     state: T = (this.constructor as typeof LiveComponent).props as any;
     className: string;
     refCanvas = React.createRef<HTMLCanvasElement>();
